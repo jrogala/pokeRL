@@ -1,0 +1,15 @@
+# virtual env
+.venv*/
+
+# python stuff
+__pycache__/
+*.py[cod]
+
+*.gb*
+
+# setuptools stuff:
+*.egg-info/
+*.egg
+
+# vscode
+.vscode/
