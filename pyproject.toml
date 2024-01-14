@@ -20,5 +20,5 @@ where = ["src"]
 dependencies = { file = ["requirements.in"] }
 
 [project.scripts]
-rom_handler = "pokerl.rom_handler:main"
+rom_handler = "pokerl.romhandler:main"
 play = "pokerl.blueterface:main"
