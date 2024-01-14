@@ -1,11 +1,13 @@
 from dataclasses import dataclass, field
-from gymnasium import Env, Space, spaces
+from gymnasium import Env, spaces
+import numpy as np
+from numpy import dtype, ndarray, uint8
 from pyboy import WindowEvent
 from enum import Enum
 from random import choice
 
 from typing import Any
-from pokerl.blueterface import PokemonBlueInterface
+from pokerl.pyboyterface import PyBoyInterface
 
 
 class GameboyAction(Enum):
@@ -21,12 +23,29 @@ class GameboyAction(Enum):
     START = (WindowEvent.PRESS_BUTTON_START, WindowEvent.RELEASE_BUTTON_START)
     SELECT = (WindowEvent.PRESS_BUTTON_SELECT, WindowEvent.RELEASE_BUTTON_SELECT)
     NOTHING = (WindowEvent.PASS, WindowEvent.PASS)
+    
+@dataclass
+class PyBoyGym(Env, PyBoyInterface):
+    """A Gym environment for Pokemon Blue."""
 
-class PokemonBlueGym(Env, PokemonBlueInterface):   
-    def __init__(self):
-        super().__init__()
-        self.screen = self.pyboy.botsupport_manager().screen()
+    def __post_init__(self):
+        super().__post_init__()
         self.action_space = spaces.Discrete(len(GameboyAction))
+        self.action_space_convertissor = [
+            GameboyAction.UP,
+            GameboyAction.DOWN,
+            GameboyAction.LEFT,
+            GameboyAction.RIGHT,
+            GameboyAction.A,
+            GameboyAction.B,
+            GameboyAction.START,
+            GameboyAction.SELECT,
+            GameboyAction.NOTHING,
+        ]
+        self.observation_space = spaces.Box(
+            low=0, high=255, shape=(144, 160, 1), dtype=np.uint8
+        )
+        self.reward = 0
 
     def step(self, action: int):
         """Take a step in the environment.
@@ -40,14 +59,17 @@ class PokemonBlueGym(Env, PokemonBlueInterface):
             done (bool): Whether the episode is done or not.
             info (dict): Additional information about the step.
         """
+        action = self.action_space_convertissor[action]
+        self._logger.debug(f"Step: {action}")
         self.send_input(GameboyAction(action).value[0])
         self.tick()
         self.send_input(GameboyAction(action).value[1])
         observation = self._get_observation()
-        reward = self._get_reward()
+        rewardDelta = self._get_reward_delta()
+        self.reward += rewardDelta
         done = self._get_done()
         info = self._get_info()
-        return observation, reward, done, info
+        return observation, rewardDelta, done, info
     
     def reset(self):
         """Reset the environment.
@@ -55,49 +77,32 @@ class PokemonBlueGym(Env, PokemonBlueInterface):
         Returns:
             observation (ndarray): The initial observation of the environment.
         """
-        if not self._started:
-            self.game_wrapper.start_game(**self._kwargs)
-            self._started = True
-        else:
-            self.game_wrapper.reset_game()
+        self.reset_game()
         return self._get_observation()
     
-    def render():
-        pass
+    def render(self) -> ndarray[Any, dtype[uint8]]:
+        return self.screen_image()
     
     def close(self):
         """Close the environment."""
         self.pyboy.stop()
     
     def _get_observation(self):
-        """Get the current observation of the environment.
-
-        Returns:
-            observation (ndarray): The current observation of the environment.
-        """
+        """Get the current observation of the environment."""
         return self.screen.screen_ndarray()[:, :, 0]
 
-    def _get_reward(self) -> float:
-        """Get the reward obtained from the previous action.
-
-        Returns:
-            reward (float): The reward obtained from the previous action.
-        """
+    def _get_reward_delta(self) -> float:
+        """Get the reward obtained from the previous action."""
         return 0
+        raise NotImplementedError
     
     def _get_done(self) -> bool:
-        """Check whether the episode is done or not.
-
-        Returns:
-            done (bool): Whether the episode is done or not.
-        """
+        """Check whether the episode is done or not."""
         return False
+        raise NotImplementedError
     
     def _get_info(self) -> dict[str, Any]:
-        """Get additional information about the step.
-
-        Returns:
-            info (dict): Additional information about the step.
-        """
-        return {}
-    
+        """Get additional information about the step."""
+        info = {}
+        return info
+        raise NotImplementedError

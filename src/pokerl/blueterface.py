@@ -1,14 +1,13 @@
 from dataclasses import dataclass, field
 
-from pokerl.pyboyterface import PyBoyInterface
+from pokerl.gymterface import PyBoyGym
 from pokerl.settings import Pokesettings
-import os
 from pyboy.plugins.game_wrapper_pokemon_gen1 import GameWrapperPokemonGen1
 @dataclass
-class PokemonBlueInterface(PyBoyInterface):
+class PokemonBlueGym(PyBoyGym):
     """
     A class representing the interface for interacting with the Pokemon Blue game.
-    """   
+    """
     def __post_init__(self):
         """
         Initializes the PokemonBlueInterface object.
@@ -60,10 +59,24 @@ class PokemonBlueInterface(PyBoyInterface):
                 ), end="\r" ,flush=True,
             )
         self.pyboy.stop()
+    
+    def _get_reward_delta(self) -> float:
+        if self.get_level_pokemon(0) > 7:
+            return 1
+        return 0
+
+    def get_reward(self) -> float:
+        return max(0, self.get_level_pokemon(0) - 7)
+    
+    def tick(self):
+        """Pokemon tick are 24 frames long."""
+        for _ in range(24):
+            self._logger.debug(f"Tick: {self._tick}")
+            self.pyboy.tick()
+            self._tick += 1
 
 def main():
-    pokemonBlueFilename = Pokesettings.rom_name.value
-    pokemonBlue = PokemonBlueInterface(pokemonBlueFilename, interactive=True)
+    pokemonBlue = PokemonBlueGym(interactive=True)
     pokemonBlue.play_debug()
 
 if __name__ == "__main__":
