@@ -49,7 +49,7 @@ class DQNAgent:
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.target_net.eval()
 
-    def select_action(self, state, epsilon):
+    def act(self, state, epsilon):
         if np.random.rand() < epsilon:
             return self.env.action_space.sample()  # Explore
         else:
