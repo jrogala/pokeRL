@@ -1,24 +1,32 @@
-[build-system]
-requires = ["setuptools", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "pokerl"
 version = "0.0.1"
+description = "A pokemon library for reinforcement learning"
 authors = [
-    {name = "Jimmy Rogala", email = "rogala.jimmy@gmail.com"},
+    "Jimmy Rogala",
+    "Baptiste Pugnaire",
 ]
-dynamic = ["dependencies", "optional-dependencies"]
 readme = "README.md"
-requires-python = ">=3.7, <3.11"
+packages = [{include = "pokerl", from = "src"}, {include = "rl_model", from = "src"}]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.poetry.dependencies]
+python = "~3.10"
+pyboy = "^1.6.11"
+ipykernel = "^6.28.0"
+ipywidgets = "^8.1.1"
+torch = "^2.0.0"
+torch-directml = {version = "^0.2.0.dev230426", platform = "win32"}
+ray = {extras = ["default"], version = "^2.9.0"}
+gymnasium = "^0.29.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.4.4"
 
 
-[tool.setuptools.dynamic]
-dependencies = { file = ["requirements.in"] }
-
-[project.scripts]
+[tool.poetry.scripts]
 rom_handler = "pokerl.romhandler:main"
 play = "pokerl.blueterface:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
