@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
-from email import policy
 import random
-import gym
+import gymnasium as gym
 import torch
 from torch import nn
 import torch.optim as optim

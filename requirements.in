@@ -1,8 +1,0 @@
-pyboy
-ipykernel
-ipywidgets
-torch
-torch-directml
-ray[default]
-gymnasium
-pytest
