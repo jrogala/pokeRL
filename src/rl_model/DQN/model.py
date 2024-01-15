@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from email import policy
 import random
 import gym
 import torch
@@ -33,30 +34,35 @@ class DQNAgent:
     EPS_END: float = 0.01
     EPS_DECAY: float = 0.995
     TARGET_UPDATE: int = 10
+    EPSILON: float = 0.1
+    
+    memory: deque = field(default_factory=lambda: deque(maxlen=10000))
 
     def __post_init__(self):
         observation_shape = self.env.observation_space.shape[0] * self.env.observation_space.shape[1] * self.env.observation_space.shape[2]
         action_dim = self.env.action_space.n
+        
 
         self.policy_net = DQN(observation_shape, action_dim)
         self.target_net = DQN(observation_shape, action_dim)
 
         self.optimizer = optim.Adam(self.policy_net.parameters())
         self.criterion = nn.MSELoss()
-        self.memory = deque(maxlen=10000)
 
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.target_net.eval()
 
-    def select_action(self, state, epsilon):
-        if np.random.rand() < epsilon:
-            return self.env.action_space.sample()  # Explore
+    def act(self, state):
+        if np.random.rand() < self.EPSILON:
+            action = self.env.action_space.sample()
         else:
             state = torch.tensor(state, dtype=torch.float32).unsqueeze(0)
             q_values = self.policy_net(state)
-            return q_values.max(1)[1].item()  # Exploit
+            action = q_values.max(1)[1].item()
+        self.memory.append((state, action))
+        return action
 
-    def optimize_model(self):
+    def train(self):
         # Don't optimize the model if we don't yet have enough memory for a batch
         if len(self.memory) < self.BATCH_SIZE:
             return
@@ -65,10 +71,10 @@ class DQNAgent:
         transitions = random.sample(self.memory, self.BATCH_SIZE)
         
         # Transpose the batch to get separate arrays for states, actions, etc.
-        batch = zip(*transitions)&
+        batch = zip(*transitions)
 
         # Convert the batch arrays into PyTorch tensors
-        batch_state, batch_action, batch_next_state, batch_reward, batch_done = [torch.tensor(x, dtype=torch.float32) for x in batch]
+        batch_state, batch_action, batch_done = [torch.tensor(x, dtype=torch.float32) for x in batch]
          # Debug: Print the shape of an original state to understand its structure
         print("Original state shape:", transitions[0][0].shape)
 
@@ -99,27 +105,3 @@ class DQNAgent:
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-
-    def train(self, num_episodes):
-        for episode in range(num_episodes):
-            state = self.env.reset()
-            epsilon = max(self.EPS_END, self.EPS_START * (self.EPS_DECAY ** episode))
-            total_reward = 0
-
-            while True:
-                action = self.select_action(state, epsilon)
-                next_state, reward, done, _ = self.env.step(action)
-                self.memory.append((state, action, next_state, reward, done))
-                
-                total_reward += reward
-                state = next_state
-
-                self.optimize_model()
-
-                if done:
-                    break
-            
-            if episode % self.TARGET_UPDATE == 0:
-                self.target_net.load_state_dict(self.policy_net.state_dict())
-
-            print(f"Episode: {episode}, Total Reward: {total_reward}")
