@@ -1,0 +1,92 @@
+<mxfile host="65bd71144e">
+    <diagram name="Basic class " id="Blk_1hhaY5K70huOk9Sq">
+        <mxGraphModel dx="1086" dy="502" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-1" value="gym.Env" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=29;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry y="200" width="140" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-3" value="Basic gym Env" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="HoI7rFEiH5N36JJ_zX24-1" vertex="1">
+                    <mxGeometry y="29" width="140" height="51" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-12" value="Agent" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=29;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="200" width="140" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-14" value="Need a gym env with a step() and reset() implemented" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="HoI7rFEiH5N36JJ_zX24-12" vertex="1">
+                    <mxGeometry y="29" width="140" height="51" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-15" value="PyBoyGym" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=29;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="170" y="200" width="140" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-16" value="Augment gym env with pyboy env" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="HoI7rFEiH5N36JJ_zX24-15" vertex="1">
+                    <mxGeometry y="29" width="140" height="51" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" style="edgeStyle=none;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="HoI7rFEiH5N36JJ_zX24-18" target="HoI7rFEiH5N36JJ_zX24-16">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-18" value="PokemonBlueEnv" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=29;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="170" y="320" width="140" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-19" value="PyBoyEnv dedicated to pokemon&lt;br&gt;tick() will be 24 pyboy tick()&lt;br&gt;Also implement RAM access" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="HoI7rFEiH5N36JJ_zX24-18" vertex="1">
+                    <mxGeometry y="29" width="140" height="91" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-20" value="PokemonReward" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=29;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="320" width="140" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-21" value="PyBoyReward dedicated to pokemon" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="HoI7rFEiH5N36JJ_zX24-20" vertex="1">
+                    <mxGeometry y="29" width="140" height="91" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.007;entryY=0.863;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="HoI7rFEiH5N36JJ_zX24-21" target="HoI7rFEiH5N36JJ_zX24-14" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="HoI7rFEiH5N36JJ_zX24-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.014;entryY=0.157;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="HoI7rFEiH5N36JJ_zX24-1" target="HoI7rFEiH5N36JJ_zX24-14" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="70" y="180"/>
+                            <mxPoint x="560" y="180"/>
+                            <mxPoint x="560" y="237"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="HoI7rFEiH5N36JJ_zX24-19" target="HoI7rFEiH5N36JJ_zX24-21">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="HoI7rFEiH5N36JJ_zX24-3" target="HoI7rFEiH5N36JJ_zX24-16">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="BakgtQ9bBpOIhYJ_VCaM" name="Page-2">
+        <mxGraphModel dx="1086" dy="502" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="srr1qvnJVIVvLazLeBD3-1" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;dashPattern=8 8;endArrow=none;endFill=0;" edge="1" parent="1">
+                    <mxGeometry width="80" relative="1" as="geometry">
+                        <mxPoint x="600" y="480" as="sourcePoint"/>
+                        <mxPoint x="600" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="srr1qvnJVIVvLazLeBD3-2" value="" style="edgeStyle=none;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;dashPattern=8 8;endArrow=none;endFill=0;" edge="1" parent="1">
+                    <mxGeometry width="80" relative="1" as="geometry">
+                        <mxPoint x="290" y="490" as="sourcePoint"/>
+                        <mxPoint x="290" y="10" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="srr1qvnJVIVvLazLeBD3-3" value="Agent" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="690" y="10" width="50" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="srr1qvnJVIVvLazLeBD3-4" value="Environment" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="10" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="srr1qvnJVIVvLazLeBD3-5" value="Reward" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="415" y="10" width="60" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
