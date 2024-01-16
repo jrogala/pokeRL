@@ -150,9 +150,12 @@ class PyBoyGym(Env):
         """Get the current observation of the environment."""
         return self.screen.screen_ndarray()[:, :, 0]
 
+    def _update_reward(self, reward_func: callable[[Any], float]):
+        self.rewardFunc = reward_func
+    
     def _get_reward(self) -> float:
         """Get the reward obtained from the previous action."""
-        return 0
+        return self.rewardFunc(self)
     
     def _get_done(self) -> bool:
         """Check whether the episode is done or not."""

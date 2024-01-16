@@ -3,7 +3,7 @@ from pokerl.env.settings import Pokesettings
 from pokerl.env.pyboygym import PyBoyGym
 
 @dataclass
-class PokemonBlueEnv(PyBoyGym):
+class PokemonBlueEnv(PyBoyGym): 
     def __post_init__(self):
         self.rom_name = Pokesettings.rom_name.value
         super().__post_init__()

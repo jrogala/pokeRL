@@ -1,5 +1,5 @@
 import random
-from agent.agentTemplate import AgentTemplate
+from pokerl.agent.agentTemplate import AgentTemplate
 from dataclasses import dataclass, field
 from collections import deque
 
@@ -12,12 +12,15 @@ class RandomAgent(AgentTemplate):
 
 @dataclass
 class RandomAgentWithMemory(AgentTemplate):
-    memory: deque = field(init=True, repr=True, default_factory=deque(maxlen=10000))
+    memory: deque = field(init=False, repr=True, default=deque(maxlen=10000))
 
     def act(self, state):
         action = random.randint(0, self.env.action_space.n - 1)
-        self.memory.append((state, action))
         return action
 
     def train(self):
+        pass
+
+    def update(self, state, action, reward, next_state, done):
+        self.memory.append((state, action, reward, next_state, done))
         pass
