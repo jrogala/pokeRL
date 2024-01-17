@@ -50,6 +50,7 @@ class PyBoyGym(Env):
         
         self.action_space = spaces.Discrete(len(GameboyAction))
         self.action_space_convertissor = [
+            GameboyAction.NOTHING,
             GameboyAction.UP,
             GameboyAction.DOWN,
             GameboyAction.LEFT,
@@ -58,7 +59,6 @@ class PyBoyGym(Env):
             GameboyAction.B,
             GameboyAction.START,
             GameboyAction.SELECT,
-            GameboyAction.NOTHING,
         ]
         self.observation_space = spaces.Box(
             low=0, high=255, shape=(144, 160, 1), dtype=np.uint8
