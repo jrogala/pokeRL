@@ -2,15 +2,12 @@ from abc import ABC, abstractmethod
 from typing import Any
 from dataclasses import dataclass, field
 from pathlib import Path
+import gymnasium as gym
 
 @abstractmethod
 @dataclass
 class AgentTemplate(ABC):
-    path: field(init=True, repr=True, default=None)
-    
-    def __post_init__(self):
-        if self.path is not None:
-            self.load(self.path)
+    env: gym.Env = field(init=True, repr=True)
 
     @abstractmethod
     def train(self) -> None:
@@ -19,9 +16,7 @@ class AgentTemplate(ABC):
     @abstractmethod
     def act(self, state: Any) -> int:
         pass
-
-    def save(self, path: Path) -> None:
-        pass
-
-    def load(self, path: Path) -> None:
+    
+    @abstractmethod
+    def update(self, state: Any, action: int, reward: float, next_state: Any, done: bool) -> None:
         pass

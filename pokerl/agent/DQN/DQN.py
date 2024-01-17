@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+import functools
 import random
 import gymnasium as gym
 import torch
@@ -11,16 +12,16 @@ from collections import deque
 class DQN(nn.Module):
     def __init__(self, state_dim: int, action_dim: int):
         super().__init__()
-        self.fc1 = nn.Linear(state_dim, 24)
-        self.fc2 = nn.Linear(24, 48)
-        self.fc3 = nn.Linear(48, 24)
-        self.fc4 = nn.Linear(24, action_dim)
+        self.model = nn.Sequential(
+            nn.Linear(state_dim, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64),
+            nn.ReLU(),
+            nn.Linear(64, action_dim),
+        )
 
     def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        x = torch.relu(self.fc3(x))
-        x = self.fc4(x)
+        x = self.model(x)
         return x
 
 @dataclass
@@ -36,7 +37,7 @@ class DQNAgent:
     EPSILON: float = 0.1
 
     def __post_init__(self):
-        observation_shape = self.env.observation_space.shape[0] * self.env.observation_space.shape[1] * self.env.observation_space.shape[2]
+        observation_shape = functools.reduce(lambda x, y: x * y, self.env.observation_space.shape)
         action_dim = self.env.action_space.n
         self.memory = deque(maxlen=10000)
 

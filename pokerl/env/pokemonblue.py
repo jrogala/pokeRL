@@ -3,7 +3,7 @@ from pokerl.env.settings import Pokesettings
 from pokerl.env.pyboygym import PyBoyGym
 
 @dataclass
-class PokemonBlueEnv(PyBoyGym):
+class PokemonBlueEnv(PyBoyGym): 
     def __post_init__(self):
         self.rom_name = Pokesettings.rom_name.value
         super().__post_init__()
@@ -42,6 +42,7 @@ class PokemonBlueEnv(PyBoyGym):
             self._logger.debug(f"Tick: {self._tick}")
             self.pyboy.tick()
             self._tick += 1
+
 def play():
     pokemonBlue = PokemonBlueEnv(interactive=True)
     pokemonBlue.play_debug()
