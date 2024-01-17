@@ -1047,13 +1047,13 @@ files = [
 
 [[package]]
 name = "ipykernel"
-version = "6.28.0"
+version = "6.29.0"
 description = "IPython Kernel for Jupyter"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "ipykernel-6.28.0-py3-none-any.whl", hash = "sha256:c6e9a9c63a7f4095c0a22a79f765f079f9ec7be4f2430a898ddea889e8665661"},
-    {file = "ipykernel-6.28.0.tar.gz", hash = "sha256:69c11403d26de69df02225916f916b37ea4b9af417da0a8c827f84328d88e5f3"},
+    {file = "ipykernel-6.29.0-py3-none-any.whl", hash = "sha256:076663ca68492576f051e4af7720d33f34383e655f2be0d544c8b1c9de915b2f"},
+    {file = "ipykernel-6.29.0.tar.gz", hash = "sha256:b5dd3013cab7b330df712891c96cd1ab868c27a7159e606f762015e9bf8ceb3f"},
 ]
 
 [package.dependencies]
@@ -1076,7 +1076,7 @@ cov = ["coverage[toml]", "curio", "matplotlib", "pytest-cov", "trio"]
 docs = ["myst-parser", "pydata-sphinx-theme", "sphinx", "sphinx-autodoc-typehints", "sphinxcontrib-github-alt", "sphinxcontrib-spelling", "trio"]
 pyqt5 = ["pyqt5"]
 pyside6 = ["pyside6"]
-test = ["flaky", "ipyparallel", "pre-commit", "pytest (>=7.0)", "pytest-asyncio", "pytest-cov", "pytest-timeout"]
+test = ["flaky", "ipyparallel", "pre-commit", "pytest (>=7.0)", "pytest-asyncio (==0.23.2)", "pytest-cov", "pytest-timeout"]
 
 [[package]]
 name = "ipympl"
@@ -1221,13 +1221,13 @@ ansicon = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
 name = "jsonschema"
-version = "4.20.0"
+version = "4.21.0"
 description = "An implementation of JSON Schema validation for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jsonschema-4.20.0-py3-none-any.whl", hash = "sha256:ed6231f0429ecf966f5bc8dfef245998220549cbbcf140f913b7464c52c3b6b3"},
-    {file = "jsonschema-4.20.0.tar.gz", hash = "sha256:4f614fd46d8d61258610998997743ec5492a648b33cf478c1ddc23ed4598a5fa"},
+    {file = "jsonschema-4.21.0-py3-none-any.whl", hash = "sha256:70a09719d375c0a2874571b363c8a24be7df8071b80c9aa76bc4551e7297c63c"},
+    {file = "jsonschema-4.21.0.tar.gz", hash = "sha256:3ba18e27f7491ea4a1b22edce00fb820eec968d397feb3f9cb61d5894bb38167"},
 ]
 
 [package.dependencies]
@@ -1728,13 +1728,13 @@ files = [
 
 [[package]]
 name = "nest-asyncio"
-version = "1.5.8"
+version = "1.5.9"
 description = "Patch asyncio to allow nested event loops"
 optional = false
 python-versions = ">=3.5"
 files = [
-    {file = "nest_asyncio-1.5.8-py3-none-any.whl", hash = "sha256:accda7a339a70599cb08f9dd09a67e0c2ef8d8d6f4c07f96ab203f2ae254e48d"},
-    {file = "nest_asyncio-1.5.8.tar.gz", hash = "sha256:25aa2ca0d2a5b5531956b9e273b45cf664cae2b145101d73b86b199978d48fdb"},
+    {file = "nest_asyncio-1.5.9-py3-none-any.whl", hash = "sha256:61ec07ef052e72e3de22045b81b2cc7d71fceb04c568ba0b2e4b2f9f5231bec2"},
+    {file = "nest_asyncio-1.5.9.tar.gz", hash = "sha256:d1e1144e9c6e3e6392e0fcf5211cb1c8374b5648a98f1ebe48e5336006b41907"},
 ]
 
 [[package]]
@@ -2295,32 +2295,32 @@ pyasn1 = ">=0.4.6,<0.6.0"
 
 [[package]]
 name = "pyboy"
-version = "1.6.11"
+version = "1.6.12"
 description = "Game Boy emulator written in Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pyboy-1.6.11-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:ae0fb88153fa105dcf9f166515ede9ffa2bbb1197a2c22d8ee78469c254869ca"},
-    {file = "pyboy-1.6.11-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:fd76f797f596db7f8f2e3f8bd969828fc25e7b292519f42f8b0312819e2785e4"},
-    {file = "pyboy-1.6.11-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:24eb47ff6fbdd2879feb9b416713df32566e53997d2b5b013000f1960c5386e9"},
-    {file = "pyboy-1.6.11-cp310-cp310-win_amd64.whl", hash = "sha256:616fb0feffe0dcf1f8e890b71e51ace9c1aceac63631ae3b4ab26a6963933562"},
-    {file = "pyboy-1.6.11-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:ec025d372b535436443bbd57c52303c7d68f446415ce82954414a3fc53a974db"},
-    {file = "pyboy-1.6.11-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:ad2f64183b250e19aeaa678e1adce002333e1b096405bda95a1daa74cc51eecb"},
-    {file = "pyboy-1.6.11-cp311-cp311-win_amd64.whl", hash = "sha256:0389a81166def715ecf8f180ea0ba703d54c4d85bab40df428b6b12fad7d5615"},
-    {file = "pyboy-1.6.11-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:0eaac4803a702787f8f55324ebbf493338ea96a1ac1721e2243da9405de59e29"},
-    {file = "pyboy-1.6.11-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:376fb6c74dec7dfbe4f0bab7f45f1a9687dc43d1524dee0cfcb7a2176bf049ba"},
-    {file = "pyboy-1.6.11-cp312-cp312-win_amd64.whl", hash = "sha256:1df4482d51b81bbdcc8584dbe950585aa399e561c3af113484ab2593ccb3015b"},
-    {file = "pyboy-1.6.11-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:df8bca1f8b414686301217e24b2a6ed458852ce915097a8b260eb57b77875678"},
-    {file = "pyboy-1.6.11-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:be4a2190bb3e1350bfb95e565d15d5bf3772ed0a9296ba07bfd97c234030629b"},
-    {file = "pyboy-1.6.11-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:a0b7419ccb6fe84b06b59b08bed555e5b41a9887a6a2b5ce0f5bee3c41a5bae9"},
-    {file = "pyboy-1.6.11-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:bcd9d259c3d51607a717aab8df6b4a81fe56dd4fa3f214d650c3bdbb55763f1b"},
-    {file = "pyboy-1.6.11-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:02d212b59931133a6b5f22f6db7176aa78377cfbee650b20a7b2e543d533a291"},
-    {file = "pyboy-1.6.11-cp38-cp38-win_amd64.whl", hash = "sha256:3adf6437685289cc91a0791d8b22fa92d22c71a52482d312ddba15808402c112"},
-    {file = "pyboy-1.6.11-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:cd7343a671c1f7bb8f674b42cbe54b377479622f4acd25e5a6d521c7adf6d8b0"},
-    {file = "pyboy-1.6.11-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:03066895d33427e10573a43178d5498a88cecc888641a994835ffb252c5c544a"},
-    {file = "pyboy-1.6.11-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:eceb377b0b1ff1bc9d69fa46cbb2e09a9a62db8626bac1f1e45d43f9641a9127"},
-    {file = "pyboy-1.6.11-cp39-cp39-win_amd64.whl", hash = "sha256:84677852ee29741c6558b5f408407a3a765eefd557480a9c83df25cf3fbc0dd9"},
-    {file = "pyboy-1.6.11.tar.gz", hash = "sha256:bbcb9db10a46d69074b5b4cbf5e22ee8e3fb084d8420310efb9e08fea44cba7d"},
+    {file = "pyboy-1.6.12-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:68e488531c35a0337551390fb18fdbe55fde9351d8dc463e73848556bbd5d7b0"},
+    {file = "pyboy-1.6.12-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:b6b2d53f37e84fd8957aa0145202d063abc0a69d5c7ac787e8bc0bef5ae272b1"},
+    {file = "pyboy-1.6.12-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:a4a2d707a24b2fed8904dcc10aabd3c93e17ae49c83003278760039aa9ed58b2"},
+    {file = "pyboy-1.6.12-cp310-cp310-win_amd64.whl", hash = "sha256:cf11041db6a9d30049916509f53815e5bb882bc1795f71ecef2eb4df89c1194a"},
+    {file = "pyboy-1.6.12-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:823b06e1ddf1bae0a95d929baf1506ba85158b695fca909f06bf3617166a2fbe"},
+    {file = "pyboy-1.6.12-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:93954bdfedf6485e2f498e42f7cb8ee8467757961a479803d5c397c2807f8132"},
+    {file = "pyboy-1.6.12-cp311-cp311-win_amd64.whl", hash = "sha256:19289e55238221a16dc7324080b150f54133594772bc8a4afcec13008d381f55"},
+    {file = "pyboy-1.6.12-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:0e3a87a5b611cd323f7d61ca439f5b81a9818429126f999a552e7554d9b65373"},
+    {file = "pyboy-1.6.12-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:3a7ac6cf19569b4af14521833f338f5c114f9a4739fb910b98d381a01431fdca"},
+    {file = "pyboy-1.6.12-cp312-cp312-win_amd64.whl", hash = "sha256:da95f6212834aa0d656d96e7959f653de2bc8465e7ae7db45424f124ff9ae10b"},
+    {file = "pyboy-1.6.12-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:ede998e36daf44e4ad62ead64767ff6f482a0cc27ec922e8919e36c93b8faaee"},
+    {file = "pyboy-1.6.12-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:146447801fd00f4a817831802e23536007138f340f35a78701a568d8a1e43701"},
+    {file = "pyboy-1.6.12-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:28028ff4ca8acc1ba44a6e085d1de1a90e1f73e64f7060d50706332a955d2e8f"},
+    {file = "pyboy-1.6.12-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:b6e3ffdb347088ba517583bcc06c56daedf69035310928f1324e66e2c3ddbc58"},
+    {file = "pyboy-1.6.12-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:debea0b4d8a77c4429012847d9528e760aed89d0417ee5fc3650f4041234f114"},
+    {file = "pyboy-1.6.12-cp38-cp38-win_amd64.whl", hash = "sha256:55f8fc0befb375396391d2c645afe1295ce9943206fee40f0f46b29ea6316a07"},
+    {file = "pyboy-1.6.12-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:4a39c7847755814c07e683c26f7ed619a5f74d398860b1cfb4c2fcce2d39173c"},
+    {file = "pyboy-1.6.12-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:fcd28ca2db37acf3f7bed70b30db136d0455a82033fa685acb4ecef5c227b0bc"},
+    {file = "pyboy-1.6.12-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:d9dee8310da48ec0fa1022e8ab0d11fda6f301247f922abdf02175e342476b10"},
+    {file = "pyboy-1.6.12-cp39-cp39-win_amd64.whl", hash = "sha256:1bedc67f1689340677220f20163e537ccad80d6faaf55f2f0426e08ec79b1caa"},
+    {file = "pyboy-1.6.12.tar.gz", hash = "sha256:b97d3673daec049028a473590c284d03512baa3bca9b06d528dac4b8697ca1ea"},
 ]
 
 [package.dependencies]

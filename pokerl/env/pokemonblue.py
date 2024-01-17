@@ -42,6 +42,7 @@ class PokemonBlueEnv(PyBoyGym):
             self._logger.debug(f"Tick: {self._tick}")
             self.pyboy.tick()
             self._tick += 1
+
 def play():
     pokemonBlue = PokemonBlueEnv(interactive=True)
     pokemonBlue.play_debug()
