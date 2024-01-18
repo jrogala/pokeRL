@@ -11,8 +11,6 @@ from gymnasium import Env, spaces
 from numpy import dtype, ndarray, uint8
 from pyboy import WindowEvent
 
-from pokerl.env.rewards.reward import Reward, RewardFunction
-
 current_folder = Path(os.path.dirname(os.path.realpath(__file__)), "../..")
 
 
@@ -36,7 +34,6 @@ class GameboyAction(Enum):
 class PyBoyGym(Env):
     rom_name: str = field(default="", init=True)
     interactive: bool = field(default=False, init=True)
-    reward_list: list[RewardFunction] = field(default_factory=list, init=True)
 
     def __post_init__(self):
         self.rom_path = str(Path(current_folder, "rom", self.rom_name))
@@ -67,7 +64,6 @@ class PyBoyGym(Env):
             GameboyAction.SELECT,
         ]
         self.observation_space = spaces.Box(low=0, high=255, shape=(144, 160, 1), dtype=np.uint8)
-        self.reward = Reward(env=self)
 
     def play(self):
         try:
@@ -152,7 +148,7 @@ class PyBoyGym(Env):
 
     def _get_reward(self) -> float:
         """Get the reward obtained from the previous action."""
-        return self.reward.get_reward()
+        return 0
 
     def _get_done(self) -> bool:
         """Check whether the episode is done or not."""
