@@ -1,8 +1,10 @@
-from pokerl.env.pokemonblue import PokemonBlueEnv
 from dataclasses import dataclass, field
 
+from pokerl.env.pokemonblue import PokemonBlueEnv
+
+
 @dataclass
-class LevelPokemon():
+class LevelPokemon:
     pokemonBlueEnv: PokemonBlueEnv
     last_level_pokemon: list[int] = field(default_factory=list)
 

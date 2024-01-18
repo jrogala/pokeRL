@@ -1,4 +1,4 @@
-for step in range(total_steps):
+for _step in range(total_steps):
     latent = world_model.observe(image, latent, action)
     action = actor_critic.act(latent)
     image, reward, done, _ = env.step(action)

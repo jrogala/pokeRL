@@ -1,13 +1,14 @@
-from dataclasses import dataclass, field
 import functools
 import random
-import gymnasium as gym
-import torch
-from torch import nn
-import torch.optim as optim
-import numpy as np
-
 from collections import deque
+from dataclasses import dataclass
+
+import gymnasium as gym
+import numpy as np
+import torch
+import torch.optim as optim
+from torch import nn
+
 
 class DQN(nn.Module):
     def __init__(self, state_dim: int, action_dim: int):
@@ -23,6 +24,7 @@ class DQN(nn.Module):
     def forward(self, x):
         x = self.model(x)
         return x
+
 
 @dataclass
 class DQNAgent:
@@ -67,13 +69,15 @@ class DQNAgent:
 
         # Sample a batch of transitions from the memory
         transitions = random.sample(self.memory, self.BATCH_SIZE)
-        
+
         # Transpose the batch to get separate arrays for states, actions, etc.
         batch = zip(*transitions)
 
         # Convert the batch arrays into PyTorch tensors
-        batch_state, batch_action, batch_next_state, batch_reward, batch_done = [torch.tensor(x, dtype=torch.float32) for x in batch]
-         # Debug: Print the shape of an original state to understand its structure
+        batch_state, batch_action, batch_next_state, batch_reward, batch_done = [
+            torch.tensor(x, dtype=torch.float32) for x in batch
+        ]
+        # Debug: Print the shape of an original state to understand its structure
         print("Original state shape:", transitions[0][0].shape)
 
         # Flatten the batch_state
@@ -83,7 +87,7 @@ class DQNAgent:
         print("Flattened state shape:", batch_state.shape)
         batch_action = batch_action.type(torch.int64).unsqueeze(1)
         batch_done = batch_done.unsqueeze(1)
-        
+
         print(batch_state.shape)
         print(transitions)
 

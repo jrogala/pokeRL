@@ -1,6 +1,7 @@
 import torch
 
-class WorldModel():
+
+class WorldModel:
     def __init__(self, config):
         self.config = config
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -9,6 +10,6 @@ class WorldModel():
 
     def observe(self, image, latent, action):
         pass
-    
+
     def train(self, replay_buffer):
         pass

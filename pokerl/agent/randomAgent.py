@@ -1,7 +1,9 @@
 import random
-from pokerl.agent.agentTemplate import AgentTemplate
-from dataclasses import dataclass, field
 from collections import deque
+from dataclasses import dataclass, field
+
+from pokerl.agent.agentTemplate import AgentTemplate
+
 
 class RandomAgent(AgentTemplate):
     def act(self, state):
@@ -9,6 +11,7 @@ class RandomAgent(AgentTemplate):
 
     def train(self):
         pass
+
 
 @dataclass
 class RandomAgentWithMemory(AgentTemplate):

@@ -1,9 +1,11 @@
-from dataclasses import dataclass, field
-from pokerl.env.settings import Pokesettings
+from dataclasses import dataclass
+
 from pokerl.env.pyboygym import PyBoyGym
+from pokerl.env.settings import Pokesettings
+
 
 @dataclass
-class PokemonBlueEnv(PyBoyGym): 
+class PokemonBlueEnv(PyBoyGym):
     def __post_init__(self):
         self.rom_name = Pokesettings.rom_name.value
         super().__post_init__()
@@ -24,8 +26,10 @@ class PokemonBlueEnv(PyBoyGym):
                 (
                     f"Player position: {self.get_player_position()}",
                     f"Badges: {self.get_badges()}",
-                    f"Pokemon levels: {[self.get_level_pokemon(i) for i in range(6)]}"
-                ), end="\r" ,flush=True,
+                    f"Pokemon levels: {[self.get_level_pokemon(i) for i in range(6)]}",
+                ),
+                end="\r",
+                flush=True,
             )
         self.pyboy.stop()
 
@@ -42,6 +46,7 @@ class PokemonBlueEnv(PyBoyGym):
             self._logger.debug(f"Tick: {self._tick}")
             self.pyboy.tick()
             self._tick += 1
+
 
 def play():
     pokemonBlue = PokemonBlueEnv(interactive=True)
