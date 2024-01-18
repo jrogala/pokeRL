@@ -32,7 +32,7 @@ class GameboyAction(Enum):
 class PyBoyGym(Env):
     rom_name: str = field(default="", init=True)
     interactive: bool = field(default=False, init=True)
-    reward_list: list[RewardFunction] = field(default_factory=list, init=True, default=None)
+    reward_list: list[RewardFunction] = field(default_factory=list, init=True)
 
     def __post_init__(self):
         self.rom_path = str(Path(current_folder, "rom", self.rom_name))
