@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
-from pokerl.env.pokemonblue import PokemonBlueEnv
+from pokerl.env.pokemonstate import PokemonState
 
 
 @dataclass
 class RewardFunction(ABC):
-    env: PokemonBlueEnv
+    env: PokemonState
 
     @abstractmethod
     def get_reward(self):
@@ -15,7 +15,7 @@ class RewardFunction(ABC):
 
 @dataclass
 class Reward:
-    env: PokemonBlueEnv
+    env: PokemonState
     list_reward_class: list[RewardFunction] = field(init=True, repr=False, default_factory=list)
 
     list_reward_function: list[RewardFunction] = field(init=False, repr=True, default_factory=list)

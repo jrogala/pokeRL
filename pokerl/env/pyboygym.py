@@ -87,7 +87,6 @@ class PyBoyGym(Env):
         else:
             self._logger.debug("Resetting game")
             self.game_wrapper.reset_game()
-            self.game_wrapper.start_game()
 
     def send_input(self, button: WindowEvent):
         self._logger.debug(f"Sending input: {button}")
