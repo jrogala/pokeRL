@@ -30,6 +30,7 @@ play = "pokerl.env.pokemonblue:play"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.4"
 ruff = "^0.1.13"
+tensorboard = "^2.15.1"
 
 [build-system]
 requires = ["poetry-core"]
