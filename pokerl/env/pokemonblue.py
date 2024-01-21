@@ -29,7 +29,7 @@ class PokemonBlueEnv(PyBoyGym, PokemonState):
 
     # PokemonState methods
     def get_level_pokemon(self, pokemon_index: int) -> int:
-        return self.pyboy.get_memory_value(self.pokemon_level[pokemon_index])
+        return self.pyboy.get_memory_value(Pokesettings.pokemon_level[pokemon_index])
 
     def get_badges(self) -> int:
         return self.pyboy.get_memory_value(Pokesettings.badges.value).bit_count()

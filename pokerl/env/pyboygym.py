@@ -48,6 +48,7 @@ class PyBoyGym(Env):
 
         self._tick = 0
         self._started = False
+        self._rewardValue = 0
         self._logger = getLogger(__name__)
         self._logger.setLevel("DEBUG")
 
@@ -124,7 +125,6 @@ class PyBoyGym(Env):
         self.send_input(GameboyAction(action).value[1])
         observation = self._get_observation()
         rewardDelta = self._get_reward()
-        self.reward += rewardDelta
         done = self._get_done()
         info = self._get_info()
         return observation, rewardDelta, done, info

@@ -1,13 +1,15 @@
 import functools
-import random
 from collections import deque
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import gymnasium as gym
 import numpy as np
 import torch
 import torch.optim as optim
-from torch import nn
+from torch import argmax, nn
+from torch.utils.data import DataLoader, TensorDataset
+
+from pokerl.agent.agentTemplate import AgentTemplate
 
 
 class DQN(nn.Module):
@@ -21,13 +23,13 @@ class DQN(nn.Module):
             nn.Linear(64, action_dim),
         )
 
-    def forward(self, x):
+    def forward(self, x: torch.FloatTensor) -> torch.FloatTensor:
         x = self.model(x)
         return x
 
 
 @dataclass
-class DQNAgent:
+class DQNAgent(AgentTemplate):
     env: gym.Env
 
     BATCH_SIZE: int = 128
@@ -38,10 +40,11 @@ class DQNAgent:
     TARGET_UPDATE: int = 10
     EPSILON: float = 0.1
 
+    memory: deque = field(default_factory=deque, init=False)
+
     def __post_init__(self):
         observation_shape = functools.reduce(lambda x, y: x * y, self.env.observation_space.shape)
         action_dim = self.env.action_space.n
-        self.memory = deque(maxlen=10000)
 
         self.policy_net = DQN(observation_shape, action_dim)
         self.target_net = DQN(observation_shape, action_dim)
@@ -56,54 +59,44 @@ class DQNAgent:
         if np.random.rand() < self.EPSILON:
             action = self.env.action_space.sample()
         else:
-            state = torch.tensor(state, dtype=torch.float32).unsqueeze(0)
-            q_values = self.policy_net(state)
-            action = q_values.max(1)[1].item()
-        self.memory.append((state, action))
+            with torch.no_grad():
+                state = torch.tensor(state, dtype=torch.float32).flatten(0)
+                q_values = self.policy_net(state)
+                action = argmax(q_values).item()
         return action
 
-    def train(self):
+    def update(self, state, action, reward, next_state, done):
+        self.memory.append((state, action, next_state, reward, done))
+
+    def train(self, epoch=1):
         # Don't optimize the model if we don't yet have enough memory for a batch
         if len(self.memory) < self.BATCH_SIZE:
             return
+        states, actions, next_states, rewards, dones = zip(*self.memory)
 
-        # Sample a batch of transitions from the memory
-        transitions = random.sample(self.memory, self.BATCH_SIZE)
+        states_tensor = torch.tensor(states).flatten(1).float()
+        actions_tensor = torch.tensor(actions).unsqueeze(1).float()
+        next_states_tensor = torch.tensor(next_states).flatten(1).float()
+        rewards_tensor = torch.tensor(rewards).unsqueeze(1).float()
+        dataset = TensorDataset(states_tensor, actions_tensor, next_states_tensor, rewards_tensor)
+        dataloader = DataLoader(dataset, batch_size=self.BATCH_SIZE, shuffle=True)
 
-        # Transpose the batch to get separate arrays for states, actions, etc.
-        batch = zip(*transitions)
+        for _ in range(epoch):
+            for state_batch, action_batch, next_state_batch, reward_batch in dataloader:
+                # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
+                # columns of actions taken
+                state_action_values = self.policy_net(state_batch).gather(1, action_batch.long())
 
-        # Convert the batch arrays into PyTorch tensors
-        batch_state, batch_action, batch_next_state, batch_reward, batch_done = [
-            torch.tensor(x, dtype=torch.float32) for x in batch
-        ]
-        # Debug: Print the shape of an original state to understand its structure
-        print("Original state shape:", transitions[0][0].shape)
+                # Compute V(s_{t+1}) for all next states.
+                next_state_values = self.target_net(next_state_batch).max(1)[0].detach().unsqueeze(1)
 
-        # Flatten the batch_state
-        batch_state = batch_state.view(self.BATCH_SIZE, -1)
+                # Compute the expected Q values
+                expected_state_action_values = (next_state_values * self.GAMMA) + reward_batch
 
-        # Debug: Print the flattened state shape
-        print("Flattened state shape:", batch_state.shape)
-        batch_action = batch_action.type(torch.int64).unsqueeze(1)
-        batch_done = batch_done.unsqueeze(1)
+                # Compute Huber loss
+                loss = self.criterion(state_action_values, expected_state_action_values)
 
-        print(batch_state.shape)
-        print(transitions)
-
-        # Get the current Q-values for the batch states and actions
-        current_q_values = self.policy_net(batch_state).gather(1, batch_action)
-
-        # Get the max predicted Q-values from the target network for next states
-        max_next_q_values = self.target_net(batch_next_state).detach().max(1)[0].unsqueeze(1)
-
-        # Calculate the expected Q-values
-        expected_q_values = batch_reward + (self.GAMMA * max_next_q_values * (1 - batch_done))
-
-        # Compute loss between current Q-values and expected Q-values
-        loss = self.criterion(current_q_values, expected_q_values)
-
-        # Optimize the model
-        self.optimizer.zero_grad()
-        loss.backward()
-        self.optimizer.step()
+                # Optimize the model
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()
