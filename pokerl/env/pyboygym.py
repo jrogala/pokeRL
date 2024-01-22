@@ -48,7 +48,6 @@ class PyBoyGym(Env):
 
         self._tick = 0
         self._started = False
-        self._rewardValue = 0
         self._logger = getLogger(__name__)
         self._logger.setLevel("DEBUG")
 
