@@ -796,6 +796,7 @@ class Conv2dSamePad(torch.nn.Conv2d):
             self.dilation,
             self.groups,
         )
+        print(ret.shape)
         return ret
 
 
