@@ -6,9 +6,8 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import pyboy
+import pyboy  # type: ignore
 from gymnasium import Env, spaces
-from numpy import dtype, ndarray, uint8
 from pyboy import WindowEvent
 
 current_folder = Path(os.path.dirname(os.path.realpath(__file__)), "../..")
@@ -137,9 +136,6 @@ class PyBoyGym(Env):
         self.reset_game()
         return self._get_observation()
 
-    def render(self) -> ndarray[Any, dtype[uint8]]:
-        return self.screen_image()
-
     def _get_observation(self):
         """Get the current observation of the environment."""
         return self.screen.screen_ndarray()[:, :, 0]
@@ -154,5 +150,5 @@ class PyBoyGym(Env):
 
     def _get_info(self) -> dict[str, Any]:
         """Get additional information about the step."""
-        info = {}
+        info: dict = {}
         return info

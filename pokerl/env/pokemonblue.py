@@ -32,10 +32,10 @@ class PokemonBlueEnv(PyBoyGym, PokemonState):
         return self.pyboy.get_memory_value(Pokesettings.pokemon_level[pokemon_index])
 
     def get_badges(self) -> int:
-        return self.pyboy.get_memory_value(Pokesettings.badges.value).bit_count()
+        return self.pyboy.get_memory_value(Pokesettings.badges).bit_count()
 
     def get_player_position(self):
-        return self.pyboy.get_memory_value(Pokesettings.position.value)
+        return self.pyboy.get_memory_value(Pokesettings.position)
 
 def play():
     pokemonBlue = PokemonBlueEnv(interactive=True)
