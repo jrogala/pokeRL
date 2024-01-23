@@ -3,7 +3,7 @@ import torch.nn as nn
 
 
 class ImageEncoderResnet(nn.Module):
-    def __init__(self, depth=48, blocks=2, input_shape = (3,64,64), min_resolution=4, **kw):
+    def __init__(self, input_shape = (3,64,64), depth=48, blocks=2, min_resolution=4, **kw):
         super().__init__()
         self._depth = depth  # Number of channels in the first layer
         self._blocks = blocks  # Number of residual blocks
@@ -26,7 +26,7 @@ class ImageEncoderResnet(nn.Module):
         x = self._net(x)
         x = x.reshape(x.shape[0], -1)
         return x
-    
+
 
 class ResidualBlock(nn.Module):
     def __init__(self, depth, **kw):
