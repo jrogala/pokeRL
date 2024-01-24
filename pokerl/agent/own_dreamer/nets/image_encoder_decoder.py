@@ -5,6 +5,21 @@ import torch.nn as nn
 
 
 class ImageEncoderResnet(nn.Module):
+    """A ResNet-based image encoder.
+    Args:
+        input_shape (tuple): The shape of the input image.
+        depth (int): The number of channels in the first layer.
+        blocks (int): The number of residual blocks.
+        min_resolution (int): The minimum resolution of the image.
+
+    Attributes:
+        _depth (int): The number of channels in the first layer.
+        _blocks (int): The number of residual blocks.
+        _min_resolution (int): The minimum resolution of the image.
+        _input_shape (tuple): The shape of the input image.
+        _net (torch.nn.Sequential): The network.
+
+    """
     def __init__(self, input_shape = (3,64,64), depth=48, blocks=2, min_resolution=4, **kw):
         super().__init__()
         self._depth = depth  # Number of channels in the first layer
@@ -30,7 +45,24 @@ class ImageEncoderResnet(nn.Module):
         return x
 
 class ImageDecoderResnet(nn.Module):
-    def __init__(self, feature_length=12288, output_shape = (3,128,128), depth=48, blocks=2, min_resolution=4, sigmoid=False, **kw):
+    """A ResNet-based image decoder.
+    Args:
+        feature_length (int): The length of the feature vector.
+        output_shape (tuple): The shape of the output image.
+        depth (int): The number of channels in the first layer.
+        blocks (int): The number of residual blocks.
+        min_resolution (int): The minimum resolution of the image.
+        sigmoid (bool): Whether to apply sigmoid to the output. 
+    Attributes:
+        _feature_length (int): The length of the feature vector.
+        _output_shape (tuple): The shape of the output image.
+        _depth (int): The number of channels in the first layer.
+        _blocks (int): The number of residual blocks.
+        _min_resolution (int): The minimum resolution of the image.
+        _sigmoid (bool): Whether to apply sigmoid to the output. 
+        _net (torch.nn.Sequential): The network.
+    """
+    def __init__(self, feature_length=12288, output_shape = (3,128,128), depth=48, blocks=2, min_resolution=4, sigmoid=False):
         super().__init__()
         self._feature_length = feature_length
         self._output_shape = output_shape
@@ -46,9 +78,9 @@ class ImageDecoderResnet(nn.Module):
         self._lin = nn.Linear(self._feature_length, in_depth * self._min_resolution ** 2)
         for i in range(stages):
             for _ in range(self._blocks):
-                layers.append(ResidualBlock(in_depth // (2**i), transpose=True))
-            in_channels = int(in_depth // (2 ** (i + 1)))
-            out_channels = int(in_depth // (2 ** (i + 2))) if i < stages - 1 else self._output_shape[-3]
+                layers.append(ResidualBlock(in_depth // (2**(i)), transpose=True))
+            in_channels = int(in_depth // (2 ** (i )))
+            out_channels = int(in_depth // (2 ** (i + 1))) if i < stages - 1 else self._output_shape[-3]
             layers.append(nn.ConvTranspose2d(in_channels, out_channels, kernel_size=4, stride=2, padding=1))
         
         self._net = nn.Sequential(*layers)
@@ -65,6 +97,17 @@ class ImageDecoderResnet(nn.Module):
 
 
 class ResidualBlock(nn.Module):
+    """A residual block.	
+    Args:
+        depth (int): The number of channels in the first layer.
+        transpose (bool): Whether to use a convolution transpose.
+    Attributes:
+        _depth (int): The number of channels in the first layer.
+        _act1 (torch.nn.SiLU): The activation function.
+        _act2 (torch.nn.SiLU): The activation function.
+        _conv1 (torch.nn.Conv2d): The first convolution.
+        _conv2 (torch.nn.Conv2d): The second convolution.
+    """
     def __init__(self, depth, transpose=False, **kw):
         super().__init__()
         self._depth = depth
@@ -77,13 +120,10 @@ class ResidualBlock(nn.Module):
             self._conv1 = nn.Conv2d(self._depth, self._depth, kernel_size=3, stride=1, padding=1)
             self._conv2 = nn.Conv2d(self._depth, self._depth, kernel_size=3, stride=1, padding=1)
         
-
     def forward(self, x):
         identity = x
-        print(x.shape)
         x = self._conv1(x)
         x = self._act1(x)
-        print(x.shape)
         x = self._conv2(x)
         x += identity
         return self._act2(x)
