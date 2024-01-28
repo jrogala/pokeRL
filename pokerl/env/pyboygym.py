@@ -41,7 +41,6 @@ class PyBoyGym(Env):
             game_wrapper=True,
             window_type="SDL2" if self.interactive else "headless",
         )
-        self.game_wrapper = self.pyboy.game_wrapper()
         self.pyboy.set_emulation_speed(1 if self.interactive else 0)
         self.screen = self.pyboy.botsupport_manager().screen()
 
@@ -51,7 +50,7 @@ class PyBoyGym(Env):
         self._logger.setLevel("DEBUG")
 
         self.action_space = spaces.Discrete(len(GameboyAction))
-        self.action_space_convertissor = [
+        self.action_space_convertissor = (
             GameboyAction.NOTHING,
             GameboyAction.UP,
             GameboyAction.DOWN,
@@ -61,80 +60,81 @@ class PyBoyGym(Env):
             GameboyAction.B,
             GameboyAction.START,
             GameboyAction.SELECT,
-        ]
-        self.observation_space = spaces.Box(low=0, high=255, shape=(144, 160, 1), dtype=np.uint8)
+        )
+        self.observation_space = spaces.Dict({
+            "image": spaces.Box(low=0, high=255, shape=(144, 160, 3), dtype=np.uint8)
+        })
+        self.reward_range = (0, 0)
 
     def play(self):
+        """Play the game."""
         try:
             while not self.tick():
                 pass
         finally:
             self.close()
 
-    def play_debug(self):
-        raise NotImplementedError
-
     def start_game(self):
+        """Start the game."""
         self._logger.debug("Starting game")
-        self.game_wrapper.start_game()
         self._started = True
 
     def reset_game(self):
+        """Reset the game."""
+        if self._started:
+            self.saved_state.seek(0)
+            self.pyboy.load_state(self.saved_state)
+            self.post_tick()
         self._tick = 0
-        if not self._started:
-            self.start_game()
-        else:
-            self._logger.debug("Resetting game")
-            self.game_wrapper.reset_game()
+        self._logger.debug("Resetting game")
 
     def send_input(self, button: WindowEvent):
-        self._logger.debug(f"Sending input: {button}")
+        """Send input to the gameboy."""
+        self._logger.debug("Sending input: %s", button)
         self.pyboy.send_input(button)
 
     def tick(self):
+        """Make a tick"""
         self._tick += 1
-        self._logger.debug(f"Tick: {self._tick}")
+        self._logger.debug("Tick: %s", self._tick)
         self.pyboy.tick()
 
     def screen_image(self):
-        # Todo: Fix this
-        return self.screen.screen_ndarray()[:, :, 0]
+        """Get the current screen image."""
+        return self.screen.screen_ndarray()
 
     def close(self):
+        """Close the gameboy."""
         self._logger.debug("Closing")
         self.pyboy.stop()
 
     def step(self, action: int):
-        """Take a step in the environment.
-
-        Args:
-            action (int): The action to take in the environment.
-
-        Returns:
-            observation (ndarray): The current observation of the environment.
-            reward (float): The reward obtained from the previous action.
-            done (bool): Whether the episode is done or not.
-            info (dict): Additional information about the step.
-        """
-        action = self.action_space_convertissor[action]
-        self._logger.debug(f"Step: {action}")
-        self.send_input(GameboyAction(action).value[0])
+        """Make a step."""
+        action_gameboy = self.action_space_convertissor[action]
+        self._logger.debug("Step: %s", action_gameboy)
+        self.send_input(action_gameboy.value[0])
         self.tick()
-        self.send_input(GameboyAction(action).value[1])
+        self.send_input(action_gameboy.value[1])
         observation = self._get_observation()
-        rewardDelta = self._get_reward()
-        done = self._get_done()
+        reward_delta = self._get_reward()
+        truncated = self._get_done()
+        terminated = False
         info = self._get_info()
-        return observation, rewardDelta, done, info
+        return observation, reward_delta, truncated, terminated, info
 
-    def reset(self):
+    def reset(
+        self,
+        *,
+        seed: int | None = None,
+        options: dict[str, Any] | None = None,
+    ) -> tuple[np.ndarray, dict[str, Any]]:
         """Reset the environment.
 
         Returns:
             observation (ndarray): The initial observation of the environment.
         """
         self.reset_game()
-        return self._get_observation()
+        return self._get_observation(), self._get_info()
 
     def _get_observation(self):
         """Get the current observation of the environment."""
@@ -150,5 +150,7 @@ class PyBoyGym(Env):
 
     def _get_info(self) -> dict[str, Any]:
         """Get additional information about the step."""
-        info: dict = {}
+        info: dict = {
+            "self.tick": self._tick,
+        }
         return info

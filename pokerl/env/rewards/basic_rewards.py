@@ -1,21 +1,18 @@
-from dataclasses import dataclass, field
+import numpy as np
+from gymnasium import Wrapper
 
-from pokerl.env.rewards.reward import RewardFunction
+from pokerl.env.pokemonblue import PokemonBlueEnv
 
 
-@dataclass
-class LevelPokemon(RewardFunction):
-    last_level_pokemon: list[int] = field(default_factory=list, init=False)
+class WrapperLevel(Wrapper):
+    """Wrapper for reward based on pokemon level"""
+    def __init__(self, env: PokemonBlueEnv):
+        if not isinstance(env, PokemonBlueEnv):
+            raise TypeError("env must be an instance of PokemonBlueEnv")
+        super().__init__(env)
+        self.reward_range = (0, np.inf)
 
-    def __post_init__(self):
-        super().__post_init__()
-        self.last_level_pokemon = [0 for _ in range(6)]
-
-    def get_reward(self) -> float:
-        reward = 0
-        for i in range(6):
-            pokemon_level = self.env.get_level_pokemon(i)
-            if pokemon_level != self.last_level_pokemon[i]:
-                reward += pokemon_level - self.last_level_pokemon[i]
-                self.last_level_pokemon[i] = pokemon_level
-        return reward
+    def step(self, action):
+        observation, _, truncated, terminated, info = self.env.step(action)
+        reward = sum(info["level_pokemon"])
+        return observation, reward, truncated, terminated, info
