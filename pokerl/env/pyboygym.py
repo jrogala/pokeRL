@@ -48,6 +48,7 @@ class PyBoyGym(Env):
         self._started = False
         self._logger = getLogger(__name__)
         self._logger.setLevel("DEBUG")
+        self.state_file = None
 
         self.action_space = spaces.Discrete(len(GameboyAction))
         self.action_space_convertissor = (
@@ -61,9 +62,7 @@ class PyBoyGym(Env):
             GameboyAction.START,
             GameboyAction.SELECT,
         )
-        self.observation_space = spaces.Dict({
-            "image": spaces.Box(low=0, high=255, shape=(144, 160, 3), dtype=np.uint8)
-        })
+        self.observation_space = spaces.Box(low=0, high=255, shape=(144, 160, 3), dtype=np.uint8)
         self.reward_range = (0, 0)
 
     def play(self):
@@ -74,21 +73,12 @@ class PyBoyGym(Env):
         finally:
             self.close()
 
-    def start_game(self):
+    def _start_game(self):
         """Start the game."""
         self._logger.debug("Starting game")
         self._started = True
 
-    def reset_game(self):
-        """Reset the game."""
-        if self._started:
-            self.saved_state.seek(0)
-            self.pyboy.load_state(self.saved_state)
-            self.post_tick()
-        self._tick = 0
-        self._logger.debug("Resetting game")
-
-    def send_input(self, button: WindowEvent):
+    def _send_input(self, button: WindowEvent):
         """Send input to the gameboy."""
         self._logger.debug("Sending input: %s", button)
         self.pyboy.send_input(button)
@@ -112,14 +102,14 @@ class PyBoyGym(Env):
         """Make a step."""
         action_gameboy = self.action_space_convertissor[action]
         self._logger.debug("Step: %s", action_gameboy)
-        self.send_input(action_gameboy.value[0])
+        self._send_input(action_gameboy.value[0])
         self.tick()
-        self.send_input(action_gameboy.value[1])
-        observation = self._get_observation()
+        self._send_input(action_gameboy.value[1])
+        observation = self.screen_image()
         reward_delta = self._get_reward()
         truncated = self._get_done()
         terminated = False
-        info = self._get_info()
+        info = self.get_info()
         return observation, reward_delta, truncated, terminated, info
 
     def reset(
@@ -133,12 +123,15 @@ class PyBoyGym(Env):
         Returns:
             observation (ndarray): The initial observation of the environment.
         """
-        self.reset_game()
-        return self._get_observation(), self._get_info()
-
-    def _get_observation(self):
-        """Get the current observation of the environment."""
-        return self.screen.screen_ndarray()[:, :, 0]
+        if self._started:
+            self.pyboy.load_state(self.state_file)
+        else:
+            self.state_file = open(self.rom_path + ".state", "rb")
+            self.pyboy.save_state(self.state_file)
+            self.state_file.close()
+        self._tick = 0
+        self._logger.debug("Resetting game")
+        return self.screen_image(), self.get_info()
 
     def _get_reward(self) -> float:
         """Get the reward obtained from the previous action."""
@@ -148,7 +141,7 @@ class PyBoyGym(Env):
         """Check whether the episode is done or not."""
         return False
 
-    def _get_info(self) -> dict[str, Any]:
+    def get_info(self) -> dict[str, Any]:
         """Get additional information about the step."""
         info: dict = {
             "self.tick": self._tick,

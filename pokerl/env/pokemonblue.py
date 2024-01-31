@@ -36,8 +36,8 @@ class PokemonBlueEnv(PyBoyGym):
         tyle = self.pyboy.get_memory_value(Pokesettings.map_address)
         return (x, y, tyle)
 
-    def _get_info(self):
-        info = super()._get_info()
+    def get_info(self):
+        info = super().get_info()
         pos = self.get_player_position()
         poke_info = {
             "level_pokemon": [self.get_level_pokemon(i) for i in range(6)],
