@@ -126,7 +126,7 @@ class PyBoyGym(Env):
         if self._started:
             self.pyboy.load_state(self.state_file)
         else:
-            self.state_file = open(self.rom_path + ".state", "rb")
+            self.state_file = open(self.rom_path + ".state", "r+b")
             self.pyboy.save_state(self.state_file)
             self.state_file.close()
         self._tick = 0

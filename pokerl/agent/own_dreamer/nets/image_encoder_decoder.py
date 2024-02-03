@@ -3,6 +3,103 @@ import torch
 import numpy as np
 import torch.nn as nn
 
+from . import mlp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class MultiEncoder(nn.Module):
+    """A multi encoder.
+    Args:
+        input_shape (tuple): The shape of the input image.
+        depth (int): The number of channels in the first layer.
+        blocks (int): The number of residual blocks.
+        min_resolution (int): The minimum resolution of the image.
+        feature_length (int): The length of the feature vector.
+        nb_layers (int): The number of layers in the MLP.
+        units (int): The number of units in each layer of the MLP.
+    Attributes:
+        _input_shape (tuple): The shape of the input image.
+        _depth (int): The number of channels in the first layer.
+        _blocks (int): The number of residual blocks.
+        _min_resolution (int): The minimum resolution of the image.
+        _feature_length (int): The length of the feature vector.
+        _nb_layers (int): The number of layers in the MLP.
+        _units (int): The number of units in each layer of the MLP.
+        _net (torch.nn.Sequential): The network.
+    """
+    def __init__(self, input_shape = (3,64,64), depth=48, blocks=2, min_resolution=4, feature_length=12288, mlp_layers=3, units=1024, **kw):
+        super().__init__()
+        self._input_shape = input_shape
+        self._depth = depth
+        self._blocks = blocks
+        self._min_resolution = min_resolution
+        self._feature_length = feature_length
+        self._mlp_layers = mlp_layers
+        self._units = units
+        
+        self._image_encoder = ImageEncoderResnet(input_shape=self._input_shape, depth=self._depth, blocks=self._blocks, min_resolution=self._min_resolution)
+        self._mlp = mlp.MLP(input_shape=self._feature_length, nb_layers=self._mlp_layers, units=self._units)
+        
+    def forward(self, x):
+        x = self._image_encoder(x)
+        x = self._mlp(x)
+        return x
+
+class MultiDecoder(nn.Module):
+    """A multi decoder.
+    Args:
+        feature_length (int): The length of the feature vector.
+        output_shape (tuple): The shape of the output image.
+        depth (int): The number of channels in the first layer.
+        blocks (int): The number of residual blocks.
+        min_resolution (int): The minimum resolution of the image.
+        sigmoid (bool): Whether to apply sigmoid to the output. 
+        nb_layers (int): The number of layers in the MLP.
+        units (int): The number of units in each layer of the MLP.
+    Attributes:
+        _feature_length (int): The length of the feature vector.
+        _output_shape (tuple): The shape of the output image.
+        _depth (int): The number of channels in the first layer.
+        _blocks (int): The number of residual blocks.
+        _min_resolution (int): The minimum resolution of the image.
+        _sigmoid (bool): Whether to apply sigmoid to the output. 
+        _nb_layers (int): The number of layers in the MLP.
+        _units (int): The number of units in each layer of the MLP.
+        _net (torch.nn.Sequential): The network.
+    """
+    def __init__(self, feature_length=12288, output_shape = (1,128,128), depth=48, blocks=2, min_resolution=4, sigmoid=False, mlp_layers=3, units=1024):
+        super().__init__()
+        self._feature_length = feature_length
+        self._output_shape = output_shape
+        self._depth = depth
+        self._blocks = blocks
+        self._min_resolution = min_resolution
+        self._sigmoid = sigmoid
+        self._mlp_layers = mlp_layers
+        self._units = units
+        
+        self._mlp = mlp.MLP(input_shape=self._feature_length, nb_layers=self._mlp_layers, units=self._units)
+        self._image_decoder = ImageDecoderResnet(feature_length=self._units, output_shape=self._output_shape, depth=self._depth, blocks=self._blocks, min_resolution=self._min_resolution, sigmoid=self._sigmoid)
+        
+    def forward(self, z):
+        z = self._image_decoder(z)
+        z = self._mlp(z)
+        return z
+
 
 class ImageEncoderResnet(nn.Module):
     """A ResNet-based image encoder.
@@ -20,7 +117,7 @@ class ImageEncoderResnet(nn.Module):
         _net (torch.nn.Sequential): The network.
 
     """
-    def __init__(self, input_shape = (3,64,64), depth=48, blocks=2, min_resolution=4, **kw):
+    def __init__(self, input_shape = (1,128,128), depth=48, blocks=2, min_resolution=4, **kw):
         super().__init__()
         self._depth = depth  # Number of channels in the first layer
         self._blocks = blocks  # Number of residual blocks
@@ -62,7 +159,7 @@ class ImageDecoderResnet(nn.Module):
         _sigmoid (bool): Whether to apply sigmoid to the output. 
         _net (torch.nn.Sequential): The network.
     """
-    def __init__(self, feature_length=12288, output_shape = (3,128,128), depth=48, blocks=2, min_resolution=4, sigmoid=False):
+    def __init__(self, feature_length=12288, output_shape = (1,128,128), depth=48, blocks=2, min_resolution=4, sigmoid=False):
         super().__init__()
         self._feature_length = feature_length
         self._output_shape = output_shape

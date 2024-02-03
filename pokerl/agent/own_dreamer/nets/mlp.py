@@ -8,11 +8,10 @@ import numpy as np
 class MLP(nn.Module):
     def __init__(self, input_shape, nb_layers, units):
         super().__init__()
-        if isinstance(input_shape, int):
-            input_shape = (input_shape,)
+        assert isinstance(input_shape, int)
         self._input_shape = input_shape
         self._hidden_units = units
-
+        
         layers = []
 
         for i in range(nb_layers):
