@@ -2,8 +2,11 @@ import jax
 import jax.numpy as jnp
 
 tree_map = jax.tree_util.tree_map
+
+
 def sg(x):
     return tree_map(jax.lax.stop_gradient, x)
+
 
 from . import jaxutils, nets
 from . import ninjax as nj

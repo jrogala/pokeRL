@@ -8,8 +8,11 @@ from tensorflow_probability.substrates import jax as tfp
 f32 = jnp.float32
 tfd = tfp.distributions
 tree_map = jax.tree_util.tree_map
+
+
 def sg(x):
     return tree_map(jax.lax.stop_gradient, x)
+
 
 from . import jaxutils
 from . import ninjax as nj
@@ -57,10 +60,13 @@ class RSSM(nj.Module):
     def observe(self, embed, action, is_first, state=None):
         def swap(x):
             return x.transpose([1, 0] + list(range(2, len(x.shape))))
+
         if state is None:
             state = self.initial(action.shape[0])
+
         def step(prev, inputs):
             return self.obs_step(prev[0], *inputs)
+
         inputs = swap(action), swap(embed), swap(is_first)
         start = state, state
         post, prior = jaxutils.scan(step, inputs, start, self._unroll)
@@ -71,6 +77,7 @@ class RSSM(nj.Module):
     def imagine(self, action, state=None):
         def swap(x):
             return x.transpose([1, 0] + list(range(2, len(x.shape))))
+
         state = self.initial(action.shape[0]) if state is None else state
         assert isinstance(state, dict), state
         action = swap(action)

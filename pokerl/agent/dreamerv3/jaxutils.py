@@ -10,8 +10,12 @@ from . import ninjax as nj
 
 tfd = tfp.distributions
 tree_map = jax.tree_util.tree_map
+
+
 def sg(x):
     return tree_map(jax.lax.stop_gradient, x)
+
+
 COMPUTE_DTYPE = jnp.float32
 
 
@@ -51,6 +55,7 @@ def subsample(values, amount=1024):
 def scan(fn, inputs, start, unroll=True, modify=False):
     def fn2(carry, inp):
         return (fn(carry, inp),) * 2
+
     if not unroll:
         return nj.scan(fn2, start, inputs, modify=modify)[1]
     length = len(jax.tree_util.tree_leaves(inputs)[0])
@@ -254,12 +259,16 @@ class Moments(nj.Module):
 
     def update(self, x):
         if parallel():
+
             def mean(x):
                 return jax.lax.pmean(x.mean(), "i")
+
             def min_(x):
                 return jax.lax.pmin(x.min(), "i")
+
             def max_(x):
                 return jax.lax.pmax(x.max(), "i")
+
             def per(x, q):
                 return jnp.percentile(jax.lax.all_gather(x, "i"), q)
         else:

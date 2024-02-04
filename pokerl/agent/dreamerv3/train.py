@@ -138,8 +138,10 @@ def make_envs(config, **overrides):
     suite, task = config.task.split("_", 1)
     ctors = []
     for _index in range(config.envs.amount):
+
         def ctor():
             return make_env(config, **overrides)
+
         if config.envs.parallel != "none":
             ctor = bind(embodied.Parallel, ctor, config.envs.parallel)
         if config.envs.restart:

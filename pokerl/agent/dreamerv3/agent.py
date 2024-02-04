@@ -4,8 +4,11 @@ import jax.numpy as jnp
 import ruamel.yaml as yaml
 
 tree_map = jax.tree_util.tree_map
+
+
 def sg(x):
     return tree_map(jax.lax.stop_gradient, x)
+
 
 import logging
 
@@ -217,6 +220,7 @@ class WorldModel(nj.Module):
     def _metrics(self, data, dists, post, prior, losses, model_loss):
         def entropy(feat):
             return self.rssm.get_dist(feat).entropy()
+
         metrics = {}
         metrics.update(jaxutils.tensorstats(entropy(prior), "prior_ent"))
         metrics.update(jaxutils.tensorstats(entropy(post), "post_ent"))
@@ -266,6 +270,7 @@ class ImagActorCritic(nj.Module):
         def loss(start):
             def policy(s):
                 return self.actor(sg(s)).sample(seed=nj.rng())
+
             traj = imagine(policy, start, self.config.imag_horizon)
             loss, metrics = self.loss(traj)
             return loss, (traj, metrics)

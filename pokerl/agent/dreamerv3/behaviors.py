@@ -11,6 +11,7 @@ class Greedy(nj.Module):
     def __init__(self, wm, act_space, config):
         def rewfn(s):
             return wm.heads["reward"](s).mean()[1:]
+
         if config.critic_type == "vfunction":
             critics = {"extr": agent.VFunction(rewfn, config, name="critic")}
         else:
@@ -68,8 +69,10 @@ class Explore(nj.Module):
             if not scale:
                 continue
             if key == "extr":
+
                 def rewfn(s):
                     return wm.heads["reward"](s).mean()[1:]
+
                 critics[key] = agent.VFunction(rewfn, config, name=key)
             else:
                 rewfn = self.REWARDS[key](wm, act_space, config, name=key + "_reward")

@@ -1,8 +1,4 @@
-import torch
-
 from torch import nn
-from torch.nn import functional as F
-import numpy as np
 
 
 class MLP(nn.Module):
@@ -11,7 +7,7 @@ class MLP(nn.Module):
         assert isinstance(input_shape, int)
         self._input_shape = input_shape
         self._hidden_units = units
-        
+
         layers = []
 
         for i in range(nb_layers):

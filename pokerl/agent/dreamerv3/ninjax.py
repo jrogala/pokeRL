@@ -152,8 +152,10 @@ def grad(fun, keys, has_aux=False):
     if getattr(fun, "pure", False):
         raise ValueError("Use plain jax.grad() for pure functions.")
     if not has_aux:
+
         def fun(*args, _fun=fun, **kwargs):
             return _fun(*args, *kwargs), {}
+
     fun = pure(fun, nested=True)
 
     def forward(x1, x2, rng, *args, **kwargs):

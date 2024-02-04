@@ -1,6 +1,35 @@
-class Pokesettings():
+class Pokesettings:
     rom_name = "Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
     pokemon_level = (0xD18C, 0xD1B8, 0xD1E4, 0xD210, 0xD23C, 0xD268)
+    pokemon_hp = (
+        (0xD16C, 0xD16D),
+        (0xD198, 0xD199),
+        (0xD1C4, 0xD1C5),
+        (0xD1F0, 0xD1F1),
+        (0xD21C, 0xD21D),
+        (0xD248, 0xD249),
+    )
     badges = 0xD356
     position = (0xD361, 0xD362)
     map_address = 0xD35E
+    owned_pokemon = [
+        0xD2F7,
+        0xD2F8,
+        0xD2F9,
+        0xD2FA,
+        0xD2FB,
+        0xD2FC,
+        0xD2FD,
+        0xD2FE,
+        0xD2FF,
+        0xD300,
+        0xD301,
+        0xD302,
+        0xD303,
+        0xD304,
+        0xD305,
+        0xD306,
+        0xD307,
+        0xD308,
+        0xD309,
+    ]

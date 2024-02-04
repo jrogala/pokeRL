@@ -1,24 +1,33 @@
-import numpy as np
-from collections import Dict
+from typing import Dict
 
-def basic_reward(state: Dict, next_state: Dict) -> float:
+import numpy as np
+
+
+def basic_reward(current_state: Dict, next_state: Dict) -> float:
     """
     A basic reward function.
     """
-    cum_reward = -1
-    #decrease reward if the new state is the same as the previous state
-    if state == next_state:
-        cum_reward -= 10
-    
-    if state['level_pokemon'] < next_state['level_pokemon']:
-        cum_reward += 1
-        if np.max(next_state['level_pokemon']) > 2 * np.median(next_state['level_pokemon']):
-            cum_reward += -1
+    if current_state is None:
+        return 0  # no reward for the first state
+    reward = -1
+    # decrease reward if the new state is the same as the previous state
+    if (current_state["observation"].all() == next_state["observation"].all()) and (
+        current_state["info"] == next_state["info"]
+    ):
+        reward -= 10
 
-    if state['badges'] != next_state['badges']:
-        cum_reward += 100
+    if current_state["info"]["level_pokemon"] < next_state["info"]["level_pokemon"]:
+        reward += 1
+        if np.max(next_state["info"]["level_pokemon"]) > 2 * np.median(next_state["info"]["level_pokemon"]):
+            reward += -1
 
-    return cum_reward
+    if sum(current_state["info"]["owned_pokemon"]) < sum(next_state["info"]["owned_pokemon"]):
+        reward += 10
+
+    if current_state["info"]["badges"] != next_state["info"]["badges"]:
+        reward += 100
+
+    return reward
 
 
 """
@@ -57,5 +66,4 @@ Negative rewards when:
 - Using an object that is not available
 
 
-"""         
-
+"""
