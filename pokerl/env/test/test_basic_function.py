@@ -1,10 +1,10 @@
 import pytest
-from gymnasium.wrappers import ResizeObservation
+from gymnasium.wrappers import FlattenObservation, ResizeObservation
 
 from pokerl.env.pokemonblue import PokemonBlueEnv
 from pokerl.env.pyboygym import PyBoyGym
 from pokerl.env.settings import Pokesettings
-from pokerl.env.wrapper.basic_rewards import PositionObservation
+from pokerl.env.wrappers import PositionObservation
 
 
 @pytest.fixture
@@ -49,6 +49,8 @@ def test_add_reward(pokemon_blue: PokemonBlueEnv):
 
 
 def test_multiple_reward(pokemon_blue: PokemonBlueEnv):
-    env = ResizeObservation(pokemon_blue, shape=(64, 64, 3))
-    # env = PositionObservation(env)
-    # env = FlattenObservation(env)
+    env_resized = ResizeObservation(pokemon_blue, shape=(64, 64))
+    env_position = PositionObservation(env_resized)
+    env_flat = FlattenObservation(env_position)
+    env_flat.reset()
+    env_flat.step(0)

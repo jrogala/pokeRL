@@ -64,7 +64,7 @@ class PyBoyGym(Env):
             GameboyAction.START,
             GameboyAction.SELECT,
         )
-        self.observation_space = spaces.Box(low=0, high=255, shape=(144, 160, 3), dtype=np.uint8)
+        self.observation_space = spaces.Box(low=-255, high=255, shape=(144, 160, 3), dtype=np.int16)
         self.reward_range = (0, 0)
         self.current_state = None
 
@@ -115,7 +115,7 @@ class PyBoyGym(Env):
         new_state = {"observation": observation, "info": info}
         reward_delta = self._get_reward(self.current_state, new_state)
         self.current_state = new_state
-        return new_state, reward_delta, truncated, terminated
+        return observation, reward_delta, truncated, terminated, info
 
     def reset(
         self,
@@ -128,6 +128,7 @@ class PyBoyGym(Env):
         Returns:
             observation (ndarray): The initial observation of the environment.
         """
+        super().reset()
         if self._started:
             self.pyboy.load_state(self.state_file)
         else:
