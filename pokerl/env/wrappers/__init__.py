@@ -1,2 +1,10 @@
-from .observation import PositionObservation
-from .rewards import RewardDecreasingNoChange, RewardDecreasingSteps, RewardLevel, RewardPositionExploration
+from .observation import ObservationAddPokemonLevel, ObservationAddPosition, ObservationDict
+from .postprocessing import ppFlattenInfo
+from .rewards import (
+    RewardDecreasingNoChange,
+    RewardDecreasingSteps,
+    RewardIncreasingBadges,
+    RewardIncreasingCapturePokemon,
+    RewardIncreasingPokemonLevel,
+    RewardIncreasingPositionExploration,
+)

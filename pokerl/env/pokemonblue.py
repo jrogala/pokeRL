@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+import numpy as np
+
 from pokerl.env.pyboygym import PyBoyGym
 from pokerl.env.settings import Pokesettings
 from pokerl.env.tool import game_coord_to_global_coord
@@ -31,24 +33,24 @@ class PokemonBlueEnv(PyBoyGym):
 
     def get_owned_pokemon(self) -> list[int]:
         """Get the owned pokemon"""
-        return [self.pyboy.get_memory_value(i) for i in Pokesettings.owned_pokemon]
+        return np.array([self.pyboy.get_memory_value(i) for i in Pokesettings.owned_pokemon])
 
     def get_player_position(self):
         """Get the player position"""
         x = self.pyboy.get_memory_value(Pokesettings.position[0])
         y = self.pyboy.get_memory_value(Pokesettings.position[1])
         tyle = self.pyboy.get_memory_value(Pokesettings.map_address)
-        return (x, y, tyle)
+        return np.array([x, y, tyle])
 
     def get_info(self):
         info = super().get_info()
         pos = self.get_player_position()
         poke_info = {
-            "level_pokemon": [self.get_level_pokemon(i) for i in range(6)],
-            "badges": self.get_badges(),
-            "position": pos,
-            "absolute_position": game_coord_to_global_coord(*pos),
-            "owned_pokemon": self.get_owned_pokemon(),
+            "pokemon_level": np.array([self.get_level_pokemon(i) for i in range(6)]),
+            "badges": np.array(self.get_badges()),
+            "position": np.array(pos),
+            "absolute_position": np.array(game_coord_to_global_coord(*pos)),
+            "owned_pokemon": np.array(self.get_owned_pokemon()),
         }
         info.update(poke_info)
         return info

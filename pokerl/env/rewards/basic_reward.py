@@ -11,14 +11,14 @@ def basic_reward(current_state: Dict, next_state: Dict) -> float:
         return 0  # no reward for the first state
     reward = -1
     # decrease reward if the new state is the same as the previous state
-    if (current_state["observation"].all() == next_state["observation"].all()) and (
+    if (current_state["screen"].all() == next_state["screen"].all()) and (
         current_state["info"] == next_state["info"]
     ):
         reward -= 10
 
-    if current_state["info"]["level_pokemon"] < next_state["info"]["level_pokemon"]:
+    if current_state["info"]["pokemon_level"] < next_state["info"]["pokemon_level"]:
         reward += 1
-        if np.max(next_state["info"]["level_pokemon"]) > 2 * np.median(next_state["info"]["level_pokemon"]):
+        if np.max(next_state["info"]["pokemon_level"]) > 2 * np.median(next_state["info"]["pokemon_level"]):
             reward += -1
 
     if sum(current_state["info"]["owned_pokemon"]) < sum(next_state["info"]["owned_pokemon"]):

@@ -10,8 +10,6 @@ import pyboy  # type: ignore
 from gymnasium import Env, spaces
 from pyboy import WindowEvent
 
-from pokerl.env.rewards.basic_reward import basic_reward
-
 current_folder = Path(os.path.dirname(os.path.realpath(__file__)), "../..")
 
 
@@ -109,13 +107,11 @@ class PyBoyGym(Env):
         self.tick()
         self._send_input(action_gameboy.value[1])
         observation = self.screen_image()
-        truncated = self._get_done()
+        truncated = self.get_done()
         terminated = False
         info = self.get_info()
-        new_state = {"observation": observation, "info": info}
-        reward_delta = self._get_reward(self.current_state, new_state)
-        self.current_state = new_state
-        return observation, reward_delta, truncated, terminated, info
+        reward = self.get_reward()
+        return observation, reward, truncated, terminated, info
 
     def reset(
         self,
@@ -139,17 +135,17 @@ class PyBoyGym(Env):
         self._logger.debug("Resetting game")
         return self.screen_image(), self.get_info()
 
-    def _get_reward(self, current_state, next_state) -> float:
+    def get_reward(self) -> float:
         """Get the reward obtained from the previous action."""
-        return basic_reward(current_state, next_state)
+        return 0
 
-    def _get_done(self) -> bool:
+    def get_done(self) -> bool:
         """Check whether the episode is done or not."""
         return False
 
     def get_info(self) -> dict[str, Any]:
         """Get additional information about the step."""
         info: dict = {
-            "self.tick": self._tick,
+            "tick": self._tick,
         }
         return info

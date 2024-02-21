@@ -4,7 +4,7 @@ from gymnasium.wrappers import FlattenObservation, ResizeObservation
 from pokerl.env.pokemonblue import PokemonBlueEnv
 from pokerl.env.pyboygym import PyBoyGym
 from pokerl.env.settings import Pokesettings
-from pokerl.env.wrappers import PositionObservation
+from pokerl.env.wrappers import ObservationAddPokemonLevel, ObservationAddPosition, ObservationDict, ppFlattenInfo
 
 
 @pytest.fixture
@@ -41,16 +41,35 @@ def test_poke_gym_env(pokemon_blue: PokemonBlueEnv):
 
 
 def test_add_reward(pokemon_blue: PokemonBlueEnv):
-    env = PositionObservation(pokemon_blue)
+    env_dict = ObservationDict(pokemon_blue)
+    env = ObservationAddPosition(env_dict)
     env.reset()
     env.step(0)
     env.step(0)
     env.reset()
 
 
-def test_multiple_reward(pokemon_blue: PokemonBlueEnv):
+def test_resize(pokemon_blue: PokemonBlueEnv):
     env_resized = ResizeObservation(pokemon_blue, shape=(64, 64))
-    env_position = PositionObservation(env_resized)
+    env_dict = ObservationDict(env_resized)
+    env_position = ObservationAddPosition(env_dict)
     env_flat = FlattenObservation(env_position)
     env_flat.reset()
     env_flat.step(0)
+
+def test_double_obs(pokemon_blue: PokemonBlueEnv):
+    env_resized = ResizeObservation(pokemon_blue, shape=(64, 64))
+    env_dict = ObservationDict(env_resized)
+    env_position = ObservationAddPosition(env_dict)
+    env_pokemon = ObservationAddPokemonLevel(env_position)
+    env_pokemon.reset()
+    env_pokemon.step(0)
+
+def test_double_obs_flattened(pokemon_blue: PokemonBlueEnv):
+    env_resized = ResizeObservation(pokemon_blue, shape=(64, 64))
+    env_dict = ObservationDict(env_resized)
+    env_position = ObservationAddPosition(env_dict)
+    env_pokemon = ObservationAddPokemonLevel(env_position)
+    env_flattened = ppFlattenInfo(env_pokemon)
+    env_flattened.reset()
+    env_flattened.step(0)
