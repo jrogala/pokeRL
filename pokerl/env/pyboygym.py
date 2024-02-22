@@ -64,6 +64,7 @@ class PyBoyGym(Env):
         )
         self.observation_space = spaces.Box(low=-255, high=255, shape=(144, 160, 3), dtype=np.int16)
         self.reward_range = (0, 0)
+        self.last_reward = 0
         self.current_state = None
 
     def play(self):
@@ -126,11 +127,12 @@ class PyBoyGym(Env):
         """
         super().reset()
         if self._started:
-            self.pyboy.load_state(self.state_file)
+            with open(self.rom_path + ".state", "rb") as f:
+                self.pyboy.load_state(f)
         else:
-            self.state_file = open(self.rom_path + ".state", "r+b")
-            self.pyboy.save_state(self.state_file)
-            self.state_file.close()
+            with open(self.rom_path + ".state", "wb") as f:
+                self.pyboy.save_state(f)
+            self._started = True
         self._tick = 0
         self._logger.debug("Resetting game")
         return self.screen_image(), self.get_info()

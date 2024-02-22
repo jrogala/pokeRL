@@ -22,7 +22,7 @@ class ppFlattenInfo(Wrapper):
     def step(self, action: Any) -> Any:
         observation, reward, truncated, terminated, info = self.env.step(action)
         screen = observation["screen"]
-        obs_info = {k: v for k, v in info.items() if k != "screen"}
+        obs_info = {k: v for k, v in observation.items() if k != "screen"}
         obs_info_flat = spaces.flatten(self.spaces_observation_space, obs_info)
         obs = {"screen": screen, "info": obs_info_flat}
         return obs, reward, truncated, terminated, info
@@ -32,7 +32,10 @@ class ppFlattenInfo(Wrapper):
     ) -> tuple[dict[str, Any], dict[str, Any]]:
         observation, info = self.env.reset(seed=seed, options=options)
         screen = observation["screen"]
-        obs_info = {k: v for k, v in info.items() if k != "screen"}
+        obs_info = {k: v for k, v in observation.items() if k != "screen"}
         obs_info_flat = spaces.flatten(self.spaces_observation_space, obs_info)
         obs = {"screen": screen, "info": obs_info_flat}
-        return obs, info
+        if self.observation_space.contains(obs):
+            return obs, info
+        else:
+            raise ValueError(f"Invalid observation: {obs}")

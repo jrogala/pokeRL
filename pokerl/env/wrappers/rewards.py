@@ -55,8 +55,6 @@ class RewardDecreasingSteps(Wrapper):
 
     def step(self, action):
         observation, reward, truncated, terminated, info = self.env.step(action)
-        if info["tick"] == 25:
-            return observation, reward, truncated, terminated, info
         reward -= 1 * self.lambda_
         return observation, reward, truncated, terminated, info
 
