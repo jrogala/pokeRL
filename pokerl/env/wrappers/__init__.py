@@ -3,6 +3,7 @@ from .postprocessing import ppFlattenInfo
 from .rewards import (
     RewardDecreasingNoChange,
     RewardDecreasingSteps,
+    RewardHistoryToInfo,
     RewardIncreasingBadges,
     RewardIncreasingCapturePokemon,
     RewardIncreasingPokemonLevel,

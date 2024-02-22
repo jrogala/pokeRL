@@ -1,3 +1,6 @@
+from collections import deque
+from typing import Any
+
 import numpy as np
 from gymnasium import Wrapper
 
@@ -120,3 +123,44 @@ class RewardIncreasingBadges(Wrapper):
             self.badges = info["badges"]
         return observation, reward, truncated, terminated, info
 
+class RewardToInfo(Wrapper):
+    """
+    Send reward value to info.
+    """
+
+    def __init__(self, env: PokemonBlueEnv):
+        super().__init__(env)
+
+    def reset(self, seed: int | None = None, options: dict[str, Any] | None = None):
+        observation, info = self.env.reset(seed=seed, options=options)
+        info["rewardDelta"] = 0
+        info["reward"] = 0
+        return observation, info
+
+    def step(self, action):
+        observation, reward, truncated, terminated, info = self.env.step(action)
+        info["rewardDelta"] = reward
+        info["reward"] += reward
+        return observation, reward, truncated, terminated, info
+
+class RewardHistoryToInfo(Wrapper):
+    """
+    Send reward value to info.
+    """
+
+    def __init__(self, env: PokemonBlueEnv, history_size: int = 10000):
+        super().__init__(env)
+        self.history_size = history_size
+        self.rewardHistory = deque(maxlen=history_size)
+
+    def reset(self, seed: int | None = None, options: dict[str, Any] | None = None):
+        observation, info = self.env.reset(seed=seed, options=options)
+        self.rewardHistory.clear()
+        info["rewardHistory"] = self.rewardHistory
+        return observation, info
+
+    def step(self, action):
+        observation, reward, truncated, terminated, info = self.env.step(action)
+        self.rewardHistory.append(reward)
+        info["rewardHistory"] = self.rewardHistory
+        return observation, reward, truncated, terminated, info
