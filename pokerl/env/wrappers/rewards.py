@@ -27,7 +27,6 @@ class RewardIncreasingPokemonLevel(Wrapper):
         reward += sum([new - old for new, old in zip(new_level_pokemon, self.level_pokemon)]) * self.lambda_
         return observation, reward, truncated, terminated, info
 
-
 class RewardIncreasingPositionExploration(Wrapper):
     """
     Reward for exploring new positions.

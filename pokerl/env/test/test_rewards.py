@@ -30,9 +30,9 @@ def test_basic_reward_baptiste(pokemon_blue: PokemonBlueEnv):
     env = RewardIncreasingBadges(env, 100) # 27 - 28
     env.reset()
     _, reward, _, _, _ = env.step(0)
-    assert int(reward) == 0
-    _, reward, _, _, _ = env.step(0)
     assert int(reward) == -1
+    _, reward, _, _, _ = env.step(0)
+    assert int(reward) == -11
 
 def test_reward_observation(pokemon_blue: PokemonBlueEnv):
     env = RewardIncreasingPositionExploration(pokemon_blue, 1)
