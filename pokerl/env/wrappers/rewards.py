@@ -3,6 +3,7 @@ from typing import Any
 
 import numpy as np
 from gymnasium import Wrapper
+from torch import Value
 
 from pokerl.env.pokemonblue import PokemonBlueEnv
 
@@ -76,11 +77,13 @@ class RewardDecreasingNoChange(Wrapper):
         observation, reward, truncated, terminated, info = self.env.step(action)
         if self.last_info is None:
             self.last_info = info
+            return observation, reward, truncated, terminated, info
         for k in info:
             if (np.array(info[k]) != np.array(self.last_info[k])).any() and k != "tick":
-                reward -= 1 * self.lambda_
-                self.last_info = info
+                # There is a difference, no negative reward
                 return observation, reward, truncated, terminated, info
+        reward -= 1 * self.lambda_
+        self.last_info = info
         return observation, reward, truncated, terminated, info
 
 class RewardIncreasingCapturePokemon(Wrapper):

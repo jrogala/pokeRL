@@ -11,7 +11,7 @@ def basic_reward(current_state: Dict, next_state: Dict) -> float:
         return 0  # no reward for the first state
     reward = -1
     # decrease reward if the new state is the same as the previous state
-    if (current_state["screen"].all() == next_state["screen"].all()) and (
+    if (current_state["screen"] != next_state["screen"]).any() and (
         current_state["info"] == next_state["info"]
     ):
         reward -= 10
