@@ -5,6 +5,40 @@ import torch.nn as nn
 from . import mlp
 
 
+
+class RSSM(nn.Module):
+    """A Recurrent State Space Model.
+    Args:
+        feature_length (int): The length of the feature vector.
+        hidden_units (int): The number of units in the hidden state.
+        latent_units (int): The number of units in the latent state.
+    Attributes:
+        _feature_length (int): The length of the feature vector.
+        _hidden_units (int): The number of units in the hidden state.
+        _latent_units (int): The number of units in the latent state.
+        _prior (torch.nn.Sequential): The prior network.
+        _posterior (torch.nn.Sequential): The posterior network.
+        _transition (torch.nn.Sequential): The transition network.
+    """
+
+    def __init__(self, feature_length=12288, hidden_units=1024, latent_units=1024):
+        super().__init__()
+        self._feature_length = feature_length
+        self._hidden_units = hidden_units
+        self._latent_units = latent_units
+
+        self._prior = mlp.MLP(input_shape=self._feature_length, nb_layers=3, units=self._latent_units)
+        self._posterior = mlp.MLP(input_shape=self._feature_length, nb_layers=3, units=self._latent_units)
+        self._transition = mlp.MLP(input_shape=self._hidden_units + self._latent_units, nb_layers=3, units=self._hidden_units)
+
+    def forward(self, x, h):
+        prior = self._prior(x)
+        posterior = self._posterior(x)
+        z = prior + torch.randn_like(prior) * torch.exp(posterior)
+        h = self._transition(torch.cat([h, z], dim=-1))
+        return z, h
+
+
 class MultiEncoder(nn.Module):
     """A multi encoder.
     Args:
