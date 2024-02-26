@@ -18,24 +18,26 @@ class GameboyAction(Enum):
     An enum representing the possible actions that can be taken by the agent.
     """
 
+    NOTHING = (WindowEvent.PASS, WindowEvent.PASS)
     UP = (WindowEvent.PRESS_ARROW_UP, WindowEvent.RELEASE_ARROW_UP)
     DOWN = (WindowEvent.PRESS_ARROW_DOWN, WindowEvent.RELEASE_ARROW_DOWN)
     LEFT = (WindowEvent.PRESS_ARROW_LEFT, WindowEvent.RELEASE_ARROW_LEFT)
     RIGHT = (WindowEvent.PRESS_ARROW_RIGHT, WindowEvent.RELEASE_ARROW_RIGHT)
     A = (WindowEvent.PRESS_BUTTON_A, WindowEvent.RELEASE_BUTTON_A)
     B = (WindowEvent.PRESS_BUTTON_B, WindowEvent.RELEASE_BUTTON_B)
-    START = (WindowEvent.PRESS_BUTTON_START, WindowEvent.RELEASE_BUTTON_START)
-    SELECT = (WindowEvent.PRESS_BUTTON_SELECT, WindowEvent.RELEASE_BUTTON_SELECT)
-    NOTHING = (WindowEvent.PASS, WindowEvent.PASS)
+    # START = (WindowEvent.PRESS_BUTTON_START, WindowEvent.RELEASE_BUTTON_START)
+    # SELECT = (WindowEvent.PRESS_BUTTON_SELECT, WindowEvent.RELEASE_BUTTON_SELECT)
 
 
 @dataclass
 class PyBoyGym(Env):
     rom_name: str = field(default="", init=True)
+    save_state: str = field(default="", init=True)
     interactive: bool = field(default=False, init=True)
 
     def __post_init__(self):
         self.rom_path = str(Path(current_folder, "rom", self.rom_name))
+        self.save_state_path = str(Path(current_folder, "states", self.save_state))
         self.pyboy = pyboy.PyBoy(
             self.rom_path,
             game_wrapper=True,
@@ -59,8 +61,8 @@ class PyBoyGym(Env):
             GameboyAction.RIGHT,
             GameboyAction.A,
             GameboyAction.B,
-            GameboyAction.START,
-            GameboyAction.SELECT,
+            # GameboyAction.START,
+            # GameboyAction.SELECT,
         )
         self.observation_space = spaces.Box(low=-255, high=255, shape=(144, 160, 3), dtype=np.int16)
         self.reward_range = (0, 0)
@@ -70,7 +72,7 @@ class PyBoyGym(Env):
     def play(self):
         """Play the game."""
         try:
-            while not self.tick():
+            while self.tick():
                 pass
         finally:
             self.close()
@@ -90,6 +92,7 @@ class PyBoyGym(Env):
         self._tick += 1
         self._logger.debug("Tick: %s", self._tick)
         self.pyboy.tick()
+        return self.get_info()
 
     def screen_image(self):
         """Get the current screen image."""
@@ -107,6 +110,7 @@ class PyBoyGym(Env):
         self._send_input(action_gameboy.value[0])
         self.tick()
         self._send_input(action_gameboy.value[1])
+        self.tick()
         observation = self.screen_image()
         truncated = self.get_done()
         terminated = False
@@ -126,13 +130,9 @@ class PyBoyGym(Env):
             observation (ndarray): The initial observation of the environment.
         """
         super().reset()
-        if self._started:
-            with open(self.rom_path + ".state", "rb") as f:
+        if self.save_state:
+            with open(self.save_state_path + ".state", "rb") as f:
                 self.pyboy.load_state(f)
-        else:
-            with open(self.rom_path + ".state", "wb") as f:
-                self.pyboy.save_state(f)
-            self._started = True
         self._tick = 0
         self._logger.debug("Resetting game")
         return self.screen_image(), self.get_info()

@@ -24,7 +24,9 @@ class RewardIncreasingPokemonLevel(Wrapper):
         if self.level_pokemon is None:
             self.level_pokemon = info["pokemon_level"]
         new_level_pokemon = [info["pokemon_level"][i] for i in range(6)]
-        reward += sum([new - old for new, old in zip(new_level_pokemon, self.level_pokemon)]) * self.lambda_
+        for i in range(6):
+            if new_level_pokemon[i] > self.level_pokemon[i]:
+                reward += 1 * self.lambda_
         return observation, reward, truncated, terminated, info
 
 class RewardIncreasingPositionExploration(Wrapper):
@@ -79,6 +81,7 @@ class RewardDecreasingNoChange(Wrapper):
             return observation, reward, truncated, terminated, info
         for k in info:
             if (np.array(info[k]) != np.array(self.last_info[k])).any() and k != "tick":
+                self.last_info = info
                 # There is a difference, no negative reward
                 return observation, reward, truncated, terminated, info
         reward -= 1 * self.lambda_
@@ -165,4 +168,29 @@ class RewardHistoryToInfo(Wrapper):
         observation, reward, truncated, terminated, info = self.env.step(action)
         self.rewardHistory.append(reward)
         info["rewardHistory"] = self.rewardHistory
+        return observation, reward, truncated, terminated, info
+
+class RewardCheckpoint(Wrapper):
+    """
+    Checkpoint the reward value.
+    """
+
+    def __init__(self, env: PokemonBlueEnv):
+        super().__init__(env)
+        self.checkpointReward = {
+            str(np.array([6, 5, 0])): 1,
+            str(np.array([1, 10, 0])): 1,
+            str(np.array([31, 20, 1])): 1,
+            str(np.array([[20, 29, 1]])): 1,
+        }
+
+    def reset(self, seed: int | None = None, options: dict[str, Any] | None = None):
+        observation, info = self.env.reset(seed=seed, options=options)
+        return observation, info
+
+    def step(self, action):
+        observation, reward, truncated, terminated, info = self.env.step(action)
+        if self.checkpointReward.get(str(info["position"])) is not None:
+            reward += self.checkpointReward[str(info["position"])]
+            self.checkpointReward.pop(str(info["position"]))
         return observation, reward, truncated, terminated, info

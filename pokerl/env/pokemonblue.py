@@ -22,6 +22,7 @@ class PokemonBlueEnv(PyBoyGym):
             super().tick()
         self._tick += 1
         self._logger.debug("Tick: %i", self._tick)
+        return self.get_info()
 
     def get_level_pokemon(self, pokemon_index: int) -> int:
         """Get a list of pokemon level"""
@@ -54,8 +55,3 @@ class PokemonBlueEnv(PyBoyGym):
         }
         info.update(poke_info)
         return info
-
-
-def play():
-    """Play pokemon blue"""
-    PokemonBlueEnv(interactive=True).play()
