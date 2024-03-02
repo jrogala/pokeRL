@@ -19,7 +19,7 @@ rom_handler --download --extract
 
 This will download and extract the pokemon blue ROMs into the `pokeRL/roms` directory.
 
-if url has changed, --url can be used to specify a new url.
+if url has changed, --url can be used to specify a new url. 
 
 ### Run Pokemon blue with the simulator
 
