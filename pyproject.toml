@@ -25,6 +25,7 @@ stable-baselines3 = {extras = ["extra"], version = "^2.2.1"}
 dm-tree = "^0.1.8"
 ray = "^2.10.0"
 pytesseract = "^0.3.10"
+wandb = "^0.16.4"
 
 [tool.poetry.scripts]
 rom_handler = "pokerl.tools.romhandler:main"
