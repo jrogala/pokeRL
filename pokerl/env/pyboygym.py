@@ -50,7 +50,10 @@ class PyBoyGym(Env):
         self._started = False
         self._logger = getLogger(__name__)
         self._logger.setLevel("DEBUG")
-        self.state_file = None
+        self.state_file = "starter_feu.state"
+        if self.state_file:
+            with open(Path(self.save_state_path, self.state_file), "rb") as f:
+                self.pyboy.load_state(f)
 
         self.action_space = spaces.Discrete(len(GameboyAction))
         self.action_space_convertissor = (

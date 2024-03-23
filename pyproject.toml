@@ -16,13 +16,15 @@ ipykernel = "^6.28.0"
 ipywidgets = "^8.1.1"
 torch = "~2.0.0"
 torch-directml = {version = "^0.2.0.dev230426", platform = "win32"}
-ray = {extras = ["default"], version = "^2.9.0"}
 gymnasium = {extras = ["other"], version = "^0.29.1"}
 torchvision = "~0.15.1"
 matplotlib = "^3.8.2"
 ipympl = "^0.9.3"
 tqdm = "^4.66.1"
 stable-baselines3 = {extras = ["extra"], version = "^2.2.1"}
+dm-tree = "^0.1.8"
+ray = "^2.10.0"
+pytesseract = "^0.3.10"
 
 [tool.poetry.scripts]
 rom_handler = "pokerl.tools.romhandler:main"
