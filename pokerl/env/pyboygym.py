@@ -45,8 +45,6 @@ class PyBoyGym(Env):
         )
         self.pyboy.set_emulation_speed(1 if self.interactive else 0)
         self.screen = self.pyboy.botsupport_manager().screen()
-        if not self.interactive:
-            self.pyboy._rendering(False)
         self._tick = 0
         self._started = False
         self._logger = getLogger(__name__)

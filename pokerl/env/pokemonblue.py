@@ -16,13 +16,25 @@ class PokemonBlueEnv(PyBoyGym):
         self.rom_name = Pokesettings.rom_name
         super().__post_init__()
 
-    def tick(self):
-        """Tick is 24 gameboy tick (each movement take 24 gameboy tick)"""
-        for _ in range(24):
-            super().tick()
-        self._tick += 1
-        self._logger.debug("Tick: %i", self._tick)
-        return self.get_info()
+    def step(self, action: int):
+        """Make a step."""
+        action_gameboy = self.action_space_convertissor[action]
+        self._logger.debug("Step: %s", action_gameboy)
+        if self.interactive:
+            self.pyboy._rendering(False) #Disable rendering for speedup
+        self._send_input(action_gameboy.value[0])
+        self.tick()
+        self._send_input(action_gameboy.value[1])
+        for _ in range(24-3):
+            self.tick()
+        if self.interactive:
+            self.pyboy._rendering(True)
+        observation = self.screen_image()
+        truncated = self.get_done()
+        terminated = False
+        info = self.get_info()
+        reward = self.get_reward()
+        return observation, reward, truncated, terminated, info
 
     def get_level_pokemon(self, pokemon_index: int) -> int:
         """Get a list of pokemon level"""
