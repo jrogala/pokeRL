@@ -45,7 +45,8 @@ class PyBoyGym(Env):
         )
         self.pyboy.set_emulation_speed(1 if self.interactive else 0)
         self.screen = self.pyboy.botsupport_manager().screen()
-
+        if not self.interactive:
+            self.pyboy._rendering(False)
         self._tick = 0
         self._started = False
         self._logger = getLogger(__name__)
@@ -113,12 +114,12 @@ class PyBoyGym(Env):
         """Make a step."""
         action_gameboy = self.action_space_convertissor[action]
         self._logger.debug("Step: %s", action_gameboy)
-        self.pyboy._rendering(False) #Disable rendering for speedup
+        # self.pyboy._rendering(False) #Disable rendering for speedup
         self._send_input(action_gameboy.value[0])
-        # self.tick()
+        self.tick()
         self._send_input(action_gameboy.value[1])
         self.tick()
-        self.pyboy._rendering(True)
+        # self.pyboy._rendering(True)
         observation = self.screen_image()
         truncated = self.get_done()
         terminated = False
