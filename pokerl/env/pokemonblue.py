@@ -20,15 +20,17 @@ class PokemonBlueEnv(PyBoyGym):
         """Make a step."""
         action_gameboy = self.action_space_convertissor[action]
         self._logger.debug("Step: %s", action_gameboy)
-        if self.interactive:
-            self.pyboy._rendering(False) #Disable rendering for speedup
         self._send_input(action_gameboy.value[0])
         self.tick()
         self._send_input(action_gameboy.value[1])
-        for _ in range(24-3):
+        for _ in range(24-4):
             self.tick()
         if self.interactive:
             self.pyboy._rendering(True)
+            self.tick()
+            self.pyboy._rendering(False)
+        else:
+            self.tick()
         observation = self.screen_image()
         truncated = self.get_done()
         terminated = False
