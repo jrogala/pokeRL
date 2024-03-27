@@ -175,13 +175,13 @@ class RewardCheckpoint(Wrapper):
     Checkpoint the reward value.
     """
 
-    def __init__(self, env: PokemonBlueEnv):
+    def __init__(self, env: PokemonBlueEnv, lambda_: float = 1.0):
         super().__init__(env)
         self.checkpointReward = {
-            str(np.array([6, 5, 0])): 1,
-            str(np.array([1, 10, 0])): 1,
-            str(np.array([31, 20, 1])): 1,
-            str(np.array([[20, 29, 1]])): 1,
+            str(np.array([6, 5, 0])): lambda_,
+            str(np.array([1, 10, 0])): lambda_,
+            str(np.array([31, 20, 1])): lambda_,
+            str(np.array([[20, 29, 1]])): lambda_,
         }
 
     def reset(self, seed: int | None = None, options: dict[str, Any] | None = None):

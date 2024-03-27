@@ -25,8 +25,8 @@ class GameboyAction(Enum):
     RIGHT = (WindowEvent.PRESS_ARROW_RIGHT, WindowEvent.RELEASE_ARROW_RIGHT)
     A = (WindowEvent.PRESS_BUTTON_A, WindowEvent.RELEASE_BUTTON_A)
     B = (WindowEvent.PRESS_BUTTON_B, WindowEvent.RELEASE_BUTTON_B)
-    # START = (WindowEvent.PRESS_BUTTON_START, WindowEvent.RELEASE_BUTTON_START)
-    # SELECT = (WindowEvent.PRESS_BUTTON_SELECT, WindowEvent.RELEASE_BUTTON_SELECT)
+    START = (WindowEvent.PRESS_BUTTON_START, WindowEvent.RELEASE_BUTTON_START)
+    SELECT = (WindowEvent.PRESS_BUTTON_SELECT, WindowEvent.RELEASE_BUTTON_SELECT)
 
 
 @dataclass
@@ -61,8 +61,8 @@ class PyBoyGym(Env):
             GameboyAction.RIGHT,
             GameboyAction.A,
             GameboyAction.B,
-            # GameboyAction.START,
-            # GameboyAction.SELECT,
+            GameboyAction.START,
+            GameboyAction.SELECT,
         )
         self.observation_space = spaces.Box(low=-255, high=255, shape=(144, 160, 3), dtype=np.int16)
         self.reward_range = (0, 0)
