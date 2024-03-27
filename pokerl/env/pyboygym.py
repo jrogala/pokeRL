@@ -52,8 +52,11 @@ class PyBoyGym(Env):
         self._logger.setLevel("DEBUG")
         self.state_file = "starter_feu.state"
         if self.state_file:
-            with open(Path(self.save_state_path, self.state_file), "rb") as f:
-                self.pyboy.load_state(f)
+            try:
+                with open(Path(self.save_state_path, self.state_file), "rb") as f:
+                    self.pyboy.load_state(f)
+            except:
+                pass
 
         self.action_space = spaces.Discrete(len(GameboyAction))
         self.action_space_convertissor = (
@@ -110,10 +113,12 @@ class PyBoyGym(Env):
         """Make a step."""
         action_gameboy = self.action_space_convertissor[action]
         self._logger.debug("Step: %s", action_gameboy)
+        self.pyboy._rendering(False) #Disable rendering for speedup
         self._send_input(action_gameboy.value[0])
-        self.tick()
+        # self.tick()
         self._send_input(action_gameboy.value[1])
         self.tick()
+        self.pyboy._rendering(True)
         observation = self.screen_image()
         truncated = self.get_done()
         terminated = False

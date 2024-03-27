@@ -37,6 +37,7 @@ pytest = "^7.4.4"
 ruff = "^0.1.13"
 tensorboard = "^2.15.1"
 pysdl2 = "^0.9.16"
+ipykernel = "^6.29.3"
 
 [build-system]
 requires = ["poetry-core"]
