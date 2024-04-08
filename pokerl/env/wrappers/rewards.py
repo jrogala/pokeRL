@@ -65,7 +65,7 @@ class RewardDecreasingSteps(Wrapper):
 
 class RewardDecreasingNoChange(Wrapper):
     """
-    Negative Reward when info is the same between steps
+    Negative Reward when info and screen are the same between steps
     """
 
     def __init__(self, env: PokemonBlueEnv, lambda_: float = 1.0):
@@ -80,7 +80,7 @@ class RewardDecreasingNoChange(Wrapper):
             self.last_info = info
             return observation, reward, truncated, terminated, info
         for k in info:
-            if (np.array(info[k]) != np.array(self.last_info[k])).any() and k != "tick":
+            if (np.array(info[k]) != np.array(self.last_info[k])).any() and k != "tick" :
                 self.last_info = info
                 # There is a difference, no negative reward
                 return observation, reward, truncated, terminated, info
@@ -193,4 +193,22 @@ class RewardCheckpoint(Wrapper):
         if self.checkpointReward.get(str(info["position"])) is not None:
             reward += self.checkpointReward[str(info["position"])]
             self.checkpointReward.pop(str(info["position"]))
+        return observation, reward, truncated, terminated, info
+
+class RewardIncreasingLandedAttack(Wrapper):
+    """
+    Positive Reward when hitting an ennemy pokemon
+    """
+
+    def __init__(self, env: PokemonBlueEnv, lambda_: float = 1.0):
+       super().__init__(env)
+       self.reward_range = (0, np.inf)
+       self.lambda_ = lambda_
+
+    def step(self, action):
+        current_ennemy_hp = self.env.get_ennemy_hp()
+        observation, reward, truncated, terminated, info = self.env.step(action)
+        new_ennemy_hp = self.env.get_ennemy_hp()
+        if current_ennemy_hp > new_ennemy_hp:
+           reward += (current_ennemy_hp - new_ennemy_hp) * self.lambda_
         return observation, reward, truncated, terminated, info

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 import numpy as np
+from gymnasium import spaces
 
 from pokerl.env.pyboygym import PyBoyGym
 from pokerl.env.settings import Pokesettings
@@ -20,6 +21,7 @@ class PokemonBlueEnv(PyBoyGym):
         """Make a step."""
         action_gameboy = self.action_space_convertissor[action]
         self._logger.debug("Step: %s", action_gameboy)
+        self.pyboy._rendering(False)
         self._send_input(action_gameboy.value[0])
         self.tick()
         self._send_input(action_gameboy.value[1])
@@ -28,7 +30,6 @@ class PokemonBlueEnv(PyBoyGym):
         if self.interactive:
             self.pyboy._rendering(True)
             self.tick()
-            self.pyboy._rendering(False)
         else:
             self.tick()
         observation = self.screen_image()
@@ -41,6 +42,20 @@ class PokemonBlueEnv(PyBoyGym):
     def get_level_pokemon(self, pokemon_index: int) -> int:
         """Get a list of pokemon level"""
         return self.pyboy.get_memory_value(Pokesettings.pokemon_level[pokemon_index])
+    
+    def get_hp_pokemon(self, pokemon_index: int) -> int:
+        """Get a list of pokemon level"""
+        add  = Pokesettings.pokemon_hp[pokemon_index]
+        return 256 * self.pyboy.get_memory_value(add) + self.pyboy.get_memory_value(add+1)
+    
+    def get_max_hp_pokemon(self, pokemon_index: int) -> int:
+        """Get a list of pokemon level"""
+        add = Pokesettings.pokemon_max_hp[pokemon_index]
+        return 256 * self.pyboy.get_memory_value(add) + self.pyboy.get_memory_value(add + 1)
+    
+    def get_ennemy_hp(self) -> int:
+        add = Pokesettings.ennemy_hp
+        return 256 * self.pyboy.get_memory_value(add) + self.pyboy.get_memory_value(add + 1)
 
     def get_badges(self) -> int:
         """Get the badges count"""
@@ -56,6 +71,9 @@ class PokemonBlueEnv(PyBoyGym):
         y = self.pyboy.get_memory_value(Pokesettings.position[1])
         tyle = self.pyboy.get_memory_value(Pokesettings.map_address)
         return np.array([x, y, tyle])
+    
+    def get_combat_turn(self) -> int:
+        return self.pyboy.get_memory_value(Pokesettings.combat_turn)
 
     def get_info(self):
         info = super().get_info()
@@ -66,6 +84,7 @@ class PokemonBlueEnv(PyBoyGym):
             "position": np.array(pos),
             "absolute_position": np.array(game_coord_to_global_coord(*pos)),
             "owned_pokemon": np.array(self.get_owned_pokemon()),
+            "start_combat": self.get_combat_turn() == 0,
         }
         info.update(poke_info)
         return info
