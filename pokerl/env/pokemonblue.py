@@ -44,12 +44,12 @@ class PokemonBlueEnv(PyBoyGym):
         return self.pyboy.get_memory_value(Pokesettings.pokemon_level[pokemon_index])
     
     def get_hp_pokemon(self, pokemon_index: int) -> int:
-        """Get a list of pokemon level"""
+        """Get the HP of a pokemon given its index"""
         add  = Pokesettings.pokemon_hp[pokemon_index]
         return 256 * self.pyboy.get_memory_value(add) + self.pyboy.get_memory_value(add+1)
     
     def get_max_hp_pokemon(self, pokemon_index: int) -> int:
-        """Get a list of pokemon level"""
+        """Get the MAX HP of a pokemon given its index"""
         add = Pokesettings.pokemon_max_hp[pokemon_index]
         return 256 * self.pyboy.get_memory_value(add) + self.pyboy.get_memory_value(add + 1)
     

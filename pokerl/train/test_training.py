@@ -60,7 +60,7 @@ def make_env(rank, seed=0):
 
 
 if __name__ == '__main__':
-    subproc_envs = SubprocVecEnv([make_env(i) for i in range(8)])
+    subproc_envs = SubprocVecEnv([make_env(i) for i in range(16)])
 
     model = ppo.PPO(
         "MultiInputPolicy",
@@ -68,9 +68,9 @@ if __name__ == '__main__':
         # device=get_device(),
         verbose=1
         )
-    model.learn(total_timesteps=1500000,
+    model.learn(total_timesteps=50000,
           progress_bar=True,
         #   callback=WandbCallback(),
           )
-    model.save('ppo_pokemon_blue_v1_1500000')
+    # model.save('ppo_pokemon_blue_v1_1500000')
     subproc_envs.close()

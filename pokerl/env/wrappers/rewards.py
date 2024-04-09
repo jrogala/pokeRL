@@ -212,3 +212,21 @@ class RewardIncreasingLandedAttack(Wrapper):
         if current_ennemy_hp > new_ennemy_hp:
            reward += (current_ennemy_hp - new_ennemy_hp) * self.lambda_
         return observation, reward, truncated, terminated, info
+
+class RewardDecreasingLostBattle(Wrapper):
+    """
+    Negative Reward when all pokemon have no hp left
+    """
+
+    def __init__(self, env: PokemonBlueEnv, lambda_: float = 1.0):
+        super().__init__(env)
+        self.reward_range = (-np.inf, 0)
+        self.lambda_ = lambda_
+    
+    def step(self, action):
+        observation, reward, truncated, terminated, info = self.env.step(action)
+        for i in range(6):
+            if self.env.get_hp_pokemon(i) == 0:
+                reward -= 1 * self.lambda_
+        return observation, reward, truncated, terminated, info
+
