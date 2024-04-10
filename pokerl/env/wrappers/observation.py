@@ -61,7 +61,7 @@ class ObservationAddPokemonLevel(Wrapper):
             d_obs_space = env.observation_space.spaces
             d_obs_space = {**d_obs_space, "pokemon_level": spaces.Box(low=0, high=255, shape=(6,), dtype=np.uint8)}
             self.observation_space = spaces.Dict(d_obs_space)
-        else:
+        else: 
             raise Exception("You should wrap your env in ObservationDict before using ObservationAddPokemonLevel")
 
     def step(self, action):

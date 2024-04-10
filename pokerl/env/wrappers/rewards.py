@@ -204,13 +204,16 @@ class RewardIncreasingLandedAttack(Wrapper):
        super().__init__(env)
        self.reward_range = (0, np.inf)
        self.lambda_ = lambda_
+       self.ennemy_hp = None
 
     def step(self, action):
-        current_ennemy_hp = self.env.get_ennemy_hp()
         observation, reward, truncated, terminated, info = self.env.step(action)
-        new_ennemy_hp = self.env.get_ennemy_hp()
-        if current_ennemy_hp > new_ennemy_hp:
-           reward += (current_ennemy_hp - new_ennemy_hp) * self.lambda_
+        if self.ennemy_hp is None:
+            self.ennemy_hp = self.env.unwrapped.get_ennemy_hp()
+        new_ennemy_hp = self.env.unwrapped.get_ennemy_hp()
+        if self.ennemy_hp > new_ennemy_hp:
+           reward += (self.ennemy_hp - new_ennemy_hp) * self.lambda_
+        self.ennemy_hp = new_ennemy_hp
         return observation, reward, truncated, terminated, info
 
 class RewardDecreasingLostBattle(Wrapper):
@@ -225,8 +228,7 @@ class RewardDecreasingLostBattle(Wrapper):
     
     def step(self, action):
         observation, reward, truncated, terminated, info = self.env.step(action)
-        for i in range(6):
-            if self.env.get_hp_pokemon(i) == 0:
-                reward -= 1 * self.lambda_
+        if all([self.env.unwrapped.get_hp_pokemon(i) == 0 for i in range(6)]):
+            reward -= 1 * self.lambda_
         return observation, reward, truncated, terminated, info
 
