@@ -3,7 +3,7 @@ from typing import Any
 import numpy as np
 from gymnasium import Env, Wrapper
 
-from pokerl.env.pokemonblue import PokemonBlueEnv
+from pokerl.env import PokemonBlueEnv
 
 
 class StopAtPokemon(Wrapper):
@@ -18,6 +18,7 @@ class StopAtPokemon(Wrapper):
             terminated = True
             return observation, reward, truncated, terminated, info
         return observation, reward, truncated, terminated, info
+
 
 class RewardStopCheckpoint(Wrapper):
     """

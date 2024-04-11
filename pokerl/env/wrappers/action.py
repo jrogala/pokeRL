@@ -2,7 +2,7 @@ from typing import Any
 
 from gymnasium import Env, Wrapper, spaces
 
-from pokerl.env.pyboygym import GameboyAction
+from pokerl.env.pokemonBlue import GameboyAction
 
 
 class RemoveSelectStartAction(Wrapper):
@@ -12,10 +12,11 @@ class RemoveSelectStartAction(Wrapper):
         super().__init__(env)
         self.action_space = spaces.Discrete(self.env.action_space.n - 2)
         self.action_space_convertissor = [
-            button for button in self.env.unwrapped.action_space_convertissor if button not in [
-                GameboyAction.SELECT, GameboyAction.START
-            ]
+            button
+            for button in self.env.unwrapped.action_space_convertissor
+            if button not in [GameboyAction.SELECT, GameboyAction.START]
         ]
+
 
 class RemoveABAction(Wrapper):
     """Wrapper to stop the game when a pokemon is encountered"""
@@ -24,8 +25,7 @@ class RemoveABAction(Wrapper):
         super().__init__(env)
         self.action_space = spaces.Discrete(self.env.action_space.n - 2)
         self.action_space_convertissor = [
-            button for button in self.env.unwrapped.action_space_convertissor if button not in [
-                GameboyAction.A, GameboyAction.B
-            ]
+            button
+            for button in self.env.unwrapped.action_space_convertissor
+            if button not in [GameboyAction.A, GameboyAction.B]
         ]
-

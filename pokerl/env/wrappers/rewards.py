@@ -3,9 +3,8 @@ from typing import Any
 
 import numpy as np
 from gymnasium import Wrapper
-from torch import Value
 
-from pokerl.env.pokemonblue import PokemonBlueEnv
+from pokerl.env import PokemonBlueEnv
 
 
 class RewardIncreasingPokemonLevel(Wrapper):
@@ -29,6 +28,7 @@ class RewardIncreasingPokemonLevel(Wrapper):
                 reward += 1 * self.lambda_
         return observation, reward, truncated, terminated, info
 
+
 class RewardIncreasingPositionExploration(Wrapper):
     """
     Reward for exploring new positions.
@@ -48,6 +48,7 @@ class RewardIncreasingPositionExploration(Wrapper):
             self.history.add(abs_pos_str)
         return observation, reward, truncated, terminated, info
 
+
 class RewardDecreasingSteps(Wrapper):
     """
     Negative Reward for decreasing the number of steps.
@@ -62,6 +63,7 @@ class RewardDecreasingSteps(Wrapper):
         observation, reward, truncated, terminated, info = self.env.step(action)
         reward -= 1 * self.lambda_
         return observation, reward, truncated, terminated, info
+
 
 class RewardDecreasingNoChange(Wrapper):
     """
@@ -80,7 +82,7 @@ class RewardDecreasingNoChange(Wrapper):
             self.last_info = info
             return observation, reward, truncated, terminated, info
         for k in info:
-            if (np.array(info[k]) != np.array(self.last_info[k])).any() and k != "tick" :
+            if (np.array(info[k]) != np.array(self.last_info[k])).any() and k != "tick":
                 self.last_info = info
                 # There is a difference, no negative reward
                 return observation, reward, truncated, terminated, info
@@ -88,16 +90,17 @@ class RewardDecreasingNoChange(Wrapper):
         self.last_info = info
         return observation, reward, truncated, terminated, info
 
+
 class RewardIncreasingCapturePokemon(Wrapper):
     """
     Positive Reward when capturing a new pokemon
     """
 
     def __init__(self, env: PokemonBlueEnv, lambda_: float = 1.0):
-       super().__init__(env)
-       self.reward_range = (-np.inf, np.inf)
-       self.lambda_ = lambda_
-       self.owned_pokemon = None
+        super().__init__(env)
+        self.reward_range = (-np.inf, np.inf)
+        self.lambda_ = lambda_
+        self.owned_pokemon = None
 
     def step(self, action):
         observation, reward, truncated, terminated, info = self.env.step(action)
@@ -108,16 +111,17 @@ class RewardIncreasingCapturePokemon(Wrapper):
             self.owned_pokemon = info["owned_pokemon"]
         return observation, reward, truncated, terminated, info
 
+
 class RewardIncreasingBadges(Wrapper):
     """
     Positive Reward when getting a new badge
     """
 
     def __init__(self, env: PokemonBlueEnv, lambda_: float = 1.0):
-       super().__init__(env)
-       self.reward_range = (-np.inf, np.inf)
-       self.lambda_ = lambda_
-       self.badges = None
+        super().__init__(env)
+        self.reward_range = (-np.inf, np.inf)
+        self.lambda_ = lambda_
+        self.badges = None
 
     def step(self, action):
         observation, reward, truncated, terminated, info = self.env.step(action)
@@ -127,6 +131,7 @@ class RewardIncreasingBadges(Wrapper):
             reward += 1 * self.lambda_
             self.badges = info["badges"]
         return observation, reward, truncated, terminated, info
+
 
 class RewardToInfo(Wrapper):
     """
@@ -148,12 +153,13 @@ class RewardToInfo(Wrapper):
         info["reward"] += reward
         return observation, reward, truncated, terminated, info
 
+
 class RewardHistoryToInfo(Wrapper):
     """
     Send reward value to info.
     """
 
-    def __init__(self, env: PokemonBlueEnv, history_size: int = 10000):
+    def __init__(self, env: PokemonBlueEnv, history_size: int = 10):
         super().__init__(env)
         self.history_size = history_size
         self.rewardHistory = deque(maxlen=history_size)
@@ -169,6 +175,7 @@ class RewardHistoryToInfo(Wrapper):
         self.rewardHistory.append(reward)
         info["rewardHistory"] = self.rewardHistory
         return observation, reward, truncated, terminated, info
+
 
 class RewardCheckpoint(Wrapper):
     """
@@ -195,26 +202,28 @@ class RewardCheckpoint(Wrapper):
             self.checkpointReward.pop(str(info["position"]))
         return observation, reward, truncated, terminated, info
 
+
 class RewardIncreasingLandedAttack(Wrapper):
     """
     Positive Reward when hitting an ennemy pokemon
     """
 
     def __init__(self, env: PokemonBlueEnv, lambda_: float = 1.0):
-       super().__init__(env)
-       self.reward_range = (0, np.inf)
-       self.lambda_ = lambda_
-       self.ennemy_hp = None
+        super().__init__(env)
+        self.reward_range = (0, np.inf)
+        self.lambda_ = lambda_
+        self.ennemy_hp = None
 
     def step(self, action):
         observation, reward, truncated, terminated, info = self.env.step(action)
         if self.ennemy_hp is None:
-            self.ennemy_hp = self.env.unwrapped.get_ennemy_hp()
-        new_ennemy_hp = self.env.unwrapped.get_ennemy_hp()
+            self.ennemy_hp = self.env.unwrapped.helper.get_ennemy_hp()
+        new_ennemy_hp = self.env.unwrapped.helper.get_ennemy_hp()
         if self.ennemy_hp > new_ennemy_hp:
-           reward += (self.ennemy_hp - new_ennemy_hp) * self.lambda_
+            reward += (self.ennemy_hp - new_ennemy_hp) * self.lambda_
         self.ennemy_hp = new_ennemy_hp
         return observation, reward, truncated, terminated, info
+
 
 class RewardDecreasingLostBattle(Wrapper):
     """
@@ -225,10 +234,9 @@ class RewardDecreasingLostBattle(Wrapper):
         super().__init__(env)
         self.reward_range = (-np.inf, 0)
         self.lambda_ = lambda_
-    
+
     def step(self, action):
         observation, reward, truncated, terminated, info = self.env.step(action)
-        if all([self.env.unwrapped.get_hp_pokemon(i) == 0 for i in range(6)]):
+        if all(self.env.unwrapped.helper.get_hp_pokemon(i) == 0 for i in range(6)):
             reward -= 1 * self.lambda_
         return observation, reward, truncated, terminated, info
-

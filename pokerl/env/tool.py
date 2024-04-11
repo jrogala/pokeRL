@@ -45,3 +45,8 @@ def game_coord_to_global_coord(x, y, map_idx):
         x, y = 0, 0
     coord = offset + np.array([x, y])
     return coord
+
+
+def pprint_info(info):
+    print("\n".join([f"{key}: {value}" for key, value in info.items()]))
+    print("\033[F" * len(info), end="")
