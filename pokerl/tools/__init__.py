@@ -1,1 +1,1 @@
-from .devicehandler import get_device
+from .devicehandler import get_device as get_device

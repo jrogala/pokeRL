@@ -1,5 +1,3 @@
-from typing import Any
-
 from gymnasium import Env, Wrapper, spaces
 
 from pokerl.env.pokemonblue import GameboyAction

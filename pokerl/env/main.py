@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 from pokerl.env import PokemonBlueEnv
-from pokerl.env.wrappers import ObservationDict, RewardCheckpoint, RewardHistoryToInfo
+from pokerl.env.wrappers import ObservationDict, RewardHistoryToInfo
 
 
 def play(save_state="game_start", hasInfo=False, hasHistory=False):

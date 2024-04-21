@@ -57,6 +57,7 @@ def test_resize(pokemon_blue: PokemonBlueEnv):
     env_flat.reset()
     env_flat.step(0)
 
+
 def test_double_obs(pokemon_blue: PokemonBlueEnv):
     env_resized = ResizeObservation(pokemon_blue, shape=(64, 64))
     env_dict = ObservationDict(env_resized)
@@ -64,6 +65,7 @@ def test_double_obs(pokemon_blue: PokemonBlueEnv):
     env_pokemon = ObservationAddPokemonLevel(env_position)
     env_pokemon.reset()
     env_pokemon.step(0)
+
 
 def test_double_obs_flattened(pokemon_blue: PokemonBlueEnv):
     env_resized = ResizeObservation(pokemon_blue, shape=(64, 64))

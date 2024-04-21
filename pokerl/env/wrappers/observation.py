@@ -25,6 +25,7 @@ class ObservationDict(Wrapper):
         observation, info = self.env.reset(seed=seed, options=options)
         return {"screen": observation}, info
 
+
 class ObservationAddPosition(Wrapper):
     """Wrapper for reward based on pokemon level"""
 
@@ -51,6 +52,7 @@ class ObservationAddPosition(Wrapper):
         observation |= {"position": np.zeros((2,), dtype=np.float16)}
         return observation, info
 
+
 class ObservationAddPokemonLevel(Wrapper):
     """Wrapper for reward based on pokemon level"""
 
@@ -61,7 +63,7 @@ class ObservationAddPokemonLevel(Wrapper):
             d_obs_space = env.observation_space.spaces
             d_obs_space = {**d_obs_space, "pokemon_level": spaces.Box(low=0, high=255, shape=(6,), dtype=np.uint8)}
             self.observation_space = spaces.Dict(d_obs_space)
-        else: 
+        else:
             raise Exception("You should wrap your env in ObservationDict before using ObservationAddPokemonLevel")
 
     def step(self, action):
@@ -75,6 +77,7 @@ class ObservationAddPokemonLevel(Wrapper):
         observation, info = self.env.reset(seed=seed, options=options)
         observation |= {"pokemon_level": np.zeros((6,), dtype=np.uint8)}
         return observation, info
+
 
 class ObservationRemoveScreen(Wrapper):
     """Wrapper for reward based on pokemon level"""

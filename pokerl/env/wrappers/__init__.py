@@ -1,15 +1,17 @@
-from .action import RemoveABAction, RemoveSelectStartAction
-from .info import InfoReadText
-from .observation import ObservationAddPokemonLevel, ObservationAddPosition, ObservationDict
-from .postprocessing import ppFlattenInfo
-from .rewards import (
-    RewardCheckpoint,
-    RewardDecreasingNoChange,
-    RewardDecreasingSteps,
-    RewardHistoryToInfo,
-    RewardIncreasingBadges,
-    RewardIncreasingCapturePokemon,
-    RewardIncreasingPokemonLevel,
-    RewardIncreasingPositionExploration,
-)
-from .stop import RewardStopCheckpoint, StopAtPokemon
+from .action import RemoveABAction as RemoveABAction
+from .action import RemoveSelectStartAction as RemoveSelectStartAction
+from .info import InfoReadText as InfoReadText
+from .observation import ObservationAddPokemonLevel as ObservationAddPokemonLevel
+from .observation import ObservationAddPosition as ObservationAddPosition
+from .observation import ObservationDict as ObservationDict
+from .postprocessing import ppFlattenInfo as ppFlattenInfo
+from .rewards import RewardCheckpoint as RewardCheckpoint
+from .rewards import RewardDecreasingNoChange as RewardDecreasingNoChange
+from .rewards import RewardDecreasingSteps as RewardDecreasingSteps
+from .rewards import RewardHistoryToInfo as RewardHistoryToInfo
+from .rewards import RewardIncreasingBadges as RewardIncreasingBadges
+from .rewards import RewardIncreasingCapturePokemon as RewardIncreasingCapturePokemon
+from .rewards import RewardIncreasingPokemonLevel as RewardIncreasingPokemonLevel
+from .rewards import RewardIncreasingPositionExploration as RewardIncreasingPositionExploration
+from .stop import RewardStopCheckpoint as RewardStopCheckpoint
+from .stop import StopAtPokemon as StopAtPokemon

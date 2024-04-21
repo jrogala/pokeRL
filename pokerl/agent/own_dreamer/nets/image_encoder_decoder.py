@@ -5,7 +5,6 @@ import torch.nn as nn
 from . import mlp
 
 
-
 class RSSM(nn.Module):
     """A Recurrent State Space Model.
     Args:
@@ -29,7 +28,9 @@ class RSSM(nn.Module):
 
         self._prior = mlp.MLP(input_shape=self._feature_length, nb_layers=3, units=self._latent_units)
         self._posterior = mlp.MLP(input_shape=self._feature_length, nb_layers=3, units=self._latent_units)
-        self._transition = mlp.MLP(input_shape=self._hidden_units + self._latent_units, nb_layers=3, units=self._hidden_units)
+        self._transition = mlp.MLP(
+            input_shape=self._hidden_units + self._latent_units, nb_layers=3, units=self._hidden_units
+        )
 
     def forward(self, x, h):
         prior = self._prior(x)
