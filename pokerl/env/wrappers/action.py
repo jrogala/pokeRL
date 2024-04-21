@@ -2,7 +2,7 @@ from typing import Any
 
 from gymnasium import Env, Wrapper, spaces
 
-from pokerl.env.pokemonBlue import GameboyAction
+from pokerl.env.pokemonblue import GameboyAction
 
 
 class RemoveSelectStartAction(Wrapper):

@@ -1,1 +1,1 @@
-from .pokemonBlue import PokemonBlueEnv
+from pokerl.env.pokemonblue import PokemonBlueEnv

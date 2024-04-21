@@ -169,15 +169,16 @@ class PokemonBlueEnv(Env):
         if action_gameboy != GameboyAction.NOTHING.value:
             self.pyboy.button(action_gameboy)
         if self.interactive:
-            (self.pyboy.tick(1) for _ in range(24))
+            (self.pyboy.tick(1, True) for _ in range(23))
         else:
-            self.pyboy.tick(24, True)  # render only last frame
+            self.pyboy.tick(23, True)  # render only last frame
         self._tick += 1
         observation = self.screen_image()
         truncated = False
         terminated = False
         reward = 0
         info = self.get_info()
+        self.pyboy.tick()
         return observation, reward, truncated, terminated, info
 
     def reset(
