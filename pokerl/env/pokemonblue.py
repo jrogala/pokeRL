@@ -79,7 +79,7 @@ class PokemonHelper:
             "position": np.array(pos),
             "absolute_position": np.array(game_coord_to_global_coord(*pos)),
             "owned_pokemon": np.array(self.get_owned_pokemon()),
-            "start_combat": self.get_combat_turn() == 0,
+            "ennemy_hp" : self.get_ennemy_hp(),
         }
         return poke_info
 
@@ -169,16 +169,17 @@ class PokemonBlueEnv(Env):
         if action_gameboy != GameboyAction.NOTHING.value:
             self.pyboy.button(action_gameboy)
         if self.interactive:
-            (self.pyboy.tick(1, True) for _ in range(23))
+            for _ in range(24):
+                self.pyboy.tick()
         else:
-            self.pyboy.tick(23, True)  # render only last frame
+            self.pyboy.tick(24, True)  # render only last frame
         self._tick += 1
         observation = self.screen_image()
         truncated = False
         terminated = False
         reward = 0
         info = self.get_info()
-        self.pyboy.tick()
+        # self.pyboy.tick()
         return observation, reward, truncated, terminated, info
 
     def reset(

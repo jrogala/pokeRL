@@ -6,11 +6,13 @@ from .observation import ObservationAddPosition as ObservationAddPosition
 from .observation import ObservationDict as ObservationDict
 from .postprocessing import ppFlattenInfo as ppFlattenInfo
 from .rewards import RewardCheckpoint as RewardCheckpoint
+from .rewards import RewardDecreasingLostBattle as RewardDecreasingLostBattle
 from .rewards import RewardDecreasingNoChange as RewardDecreasingNoChange
 from .rewards import RewardDecreasingSteps as RewardDecreasingSteps
 from .rewards import RewardHistoryToInfo as RewardHistoryToInfo
 from .rewards import RewardIncreasingBadges as RewardIncreasingBadges
 from .rewards import RewardIncreasingCapturePokemon as RewardIncreasingCapturePokemon
+from .rewards import RewardIncreasingLandedAttack as RewardIncreasingLandedAttack
 from .rewards import RewardIncreasingPokemonLevel as RewardIncreasingPokemonLevel
 from .rewards import RewardIncreasingPositionExploration as RewardIncreasingPositionExploration
 from .stop import RewardStopCheckpoint as RewardStopCheckpoint
